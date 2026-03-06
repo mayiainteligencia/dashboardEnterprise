@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Camera, Shield, AlertTriangle, CheckCircle, Eye, EyeOff, MoreVertical, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, MoreVertical, Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { brandingConfig } from '../../../config/branding';
 
-interface SucursalInteligenteModuleProps {
+interface LumelModuleProps {
   videoStreamUrl?: string;
   apiEndpoint?: string;
-  enableLiveVideo?: boolean;
+  enableVideo?: boolean;
 }
 
-export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps> = ({ 
+export const LumelModule: React.FC<LumelModuleProps> = ({ 
   videoStreamUrl, 
   apiEndpoint,
-  enableLiveVideo = false 
+  enableVideo = false 
 }) => {
   const { colores } = brandingConfig;
   
-  const [alertas, setAlertas] = useState(2);
-  const [sucursalesActivas, setSucursalesActivas] = useState(9000);
-  const [precisionIA, setPrecisionIA] = useState(99);
-  const [deteccionesHoy, setDeteccionesHoy] = useState(24);
+  const [sessionStatus, setSessionStatus] = useState<'disponible' | 'en-sesion' | 'ocupado'>('disponible');
+  const [activeSessions, setActiveSessions] = useState(3);
+  const [averageWaitTime, setAverageWaitTime] = useState(5);
+  const [satisfactionScore, setSatisfactionScore] = useState(4.8);
   
   // Estados para el menú y modales
   const [showMenu, setShowMenu] = useState(false);
@@ -29,13 +29,33 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmedAppointment, setConfirmedAppointment] = useState<{date: string, time: string} | null>(null);
-  const [cameraEnabled, setCameraEnabled] = useState(true);
   
-  // Estado para selección de sucursal
-  const [selectedSucursal, setSelectedSucursal] = useState<1 | 2>(1);
+  // Estado para frases rotativas
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   
   const menuRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Frases motivacionales sobre bienestar emocional
+  const wellnessIdeas = [
+    "Tu bienestar importa 💜",
+    "Pausas = Energía ⚡",
+    "Hablar ayuda 💜",
+    "Cuida tu mente 💜",
+    "Respira profundo 💜",
+    "No estás solo 💜",
+    "Progresa a tu ritmo 💜",
+  ];
+
+  // Rotación automática de frases cada 5 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPhraseIndex((prevIndex) => 
+        (prevIndex + 1) % wellnessIdeas.length
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Cerrar menú al hacer clic fuera
   useEffect(() => {
@@ -59,16 +79,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
       // TODO: Conectar con API real en el futuro
     }
   }, [apiEndpoint]);
-
-  // Recargar video cuando cambia la sucursal
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      if (cameraEnabled) {
-        videoRef.current.play();
-      }
-    }
-  }, [selectedSucursal]);
 
   // Funciones del calendario
   const getDaysInMonth = (date: Date) => {
@@ -118,17 +128,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
     }
   };
 
-  const toggleCamera = () => {
-    setCameraEnabled(!cameraEnabled);
-    if (videoRef.current) {
-      if (cameraEnabled) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-    }
-  };
-
   const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
 
   return (
@@ -152,20 +151,20 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               width: '48px',
               height: '48px',
               borderRadius: '12px',
-              background: `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`,
+              background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Shield size={24} color="white" />
+            <Heart size={24} color="white" />
           </div>
           <div>
             <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-            Sucursal Inteligente
+              LUMEL
             </h3>
             <p style={{ fontSize: '12px', color: colores.textoMedio, margin: 0 }}>
-              Seguridad Inteligente con IA
+              Agente de Acompañamiento Emocional
             </p>
           </div>
         </div>
@@ -244,90 +243,20 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
         </div>
       </div>
 
-      {/* Selector de Sucursales */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '8px', 
-        marginBottom: '16px',
-        padding: '4px',
-        backgroundColor: colores.fondoTerciario,
-        borderRadius: '12px',
-      }}>
-        <button
-          onClick={() => setSelectedSucursal(1)}
-          style={{
-            flex: 1,
-            padding: '10px',
-            borderRadius: '8px',
-            border: 'none',
-            background: selectedSucursal === 1 
-              ? `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`
-              : 'transparent',
-            color: selectedSucursal === 1 ? 'white' : colores.textoMedio,
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-          }}
-        >
-          Sucursal 1
-        </button>
-        <button
-          onClick={() => setSelectedSucursal(2)}
-          style={{
-            flex: 1,
-            padding: '10px',
-            borderRadius: '8px',
-            border: 'none',
-            background: selectedSucursal === 2 
-              ? `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`
-              : 'transparent',
-            color: selectedSucursal === 2 ? 'white' : colores.textoMedio,
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s',
-          }}
-        >
-          Sucursal 2
-        </button>
-      </div>
-
-      {/* Área principal - Video */}
+      {/* Área principal - Video o contenido estático */}
       <div 
         style={{
           flex: 1,
           backgroundColor: colores.fondoTerciario,
           borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
           minHeight: '200px',
+          position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {enableLiveVideo && videoStreamUrl ? (
-          /* Stream en vivo desde API */
+        {enableVideo ? (
           <video 
-            ref={videoRef}
-            src={videoStreamUrl}
-            autoPlay 
-            muted 
-            loop
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              borderRadius: '12px',
-              filter: cameraEnabled ? 'none' : 'blur(10px) brightness(0.5)',
-              transition: 'filter 0.3s ease',
-            }}
-          />
-        ) : (
-          /* Video demo estático */
-          <video 
-            ref={videoRef}
+            src={videoStreamUrl || "/assets/LumelVideo.mp4"}
             autoPlay 
             muted 
             loop
@@ -336,182 +265,223 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              borderRadius: '12px',
-              filter: cameraEnabled ? 'none' : 'blur(10px) brightness(0.5)',
-              transition: 'filter 0.3s ease',
+              borderRadius: '16px',
             }}
             onError={(e) => {
-              console.error('Error cargando video:', e);
+              const video = e.target as HTMLVideoElement;
+              const container = video.parentElement;
+              if (container) {
+                container.innerHTML = `
+                  <div style="
+                    display: flex; 
+                    flex-direction: column;
+                    align-items: center; 
+                    justify-content: center; 
+                    height: 100%; 
+                    color: ${colores.textoMedio};
+                    background: linear-gradient(45deg, ${colores.fondoTerciario} 25%, transparent 25%, transparent 75%, ${colores.fondoTerciario} 75%, ${colores.fondoTerciario}), 
+                                linear-gradient(45deg, ${colores.fondoTerciario} 25%, transparent 25%, transparent 75%, ${colores.fondoTerciario} 75%, ${colores.fondoTerciario});
+                    background-size: 20px 20px;
+                    background-position: 0 0, 10px 10px;
+                  ">
+                    <svg width="64" height="64" fill="${colores.textoMedio}">
+                      <path d="M32 8c13.255 0 24 10.745 24 24s-10.745 24-24 24S8 45.255 8 32 18.745 8 32 8m0-4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4zm0 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 34c-6.627 0-12-5.373-12-12 0-1.657 1.343-3 3-3h18c1.657 0 3 1.343 3 3 0 6.627-5.373 12-12 12z"/>
+                    </svg>
+                    <p style="margin-top: 16px; font-size: 14px;">Video no disponible</p>
+                  </div>
+                `;
+              }
             }}
-          >
-            <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/mp4" />
-            <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/quicktime" />
-            <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/webm" />
-            Tu navegador no soporta video HTML5.
-          </video>
-        )}
-
-        {/* Mensaje cuando la cámara está deshabilitada */}
-        {!cameraEnabled && (
+          />
+        ) : (
           <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            textAlign: 'center',
-            color: '#FFFFFF',
-            zIndex: 5,
+            width: '100%',
+            height: '100%',
+            background: colores.fondoTerciario,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '16px',
           }}>
-            <EyeOff size={48} style={{ marginBottom: '12px', opacity: 0.8 }} />
-            <p style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>Cámara Deshabilitada</p>
-            <p style={{ fontSize: '13px', opacity: 0.8, margin: '4px 0 0 0' }}>Haz clic en el botón para reactivar</p>
+            {/* Contenido estático aquí */}
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <div 
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '30px',
+                  background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 16px',
+                }}
+              >
+                <Heart size={28} color="white" />
+              </div>
+              <p style={{ color: colores.textoClaro, fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+                LUMEL
+              </p>
+              <p style={{ color: colores.textoMedio, fontSize: '12px' }}>
+                Agente de Acompañamiento Emocional
+              </p>
+            </div>
           </div>
         )}
 
-        {/* Overlay con información */}
-        {cameraEnabled && (
-          <>
+        {/* Marco con frases motivacionales - NUEVO */}
+        <div style={{
+          position: 'absolute',
+          bottom: '60px',
+          right: '16px',
+          maxWidth: '200px',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          padding: '10px 16px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          transition: 'all 0.5s ease',
+          animation: 'fadeIn 0.5s ease',
+        }}>
+          <p style={{
+            color: '#FFFFFF',
+            fontSize: '11px',
+            lineHeight: '1.4',
+            margin: 0,
+            textAlign: 'center',
+            fontWeight: '500',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+          }}>
+            {wellnessIdeas[currentPhraseIndex]}
+          </p>
+          
+          {/* Indicadores de progreso */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '4px',
+            marginTop: '8px',
+          }}>
+            {wellnessIdeas.map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  width: '4px',
+                  height: '4px',
+                  borderRadius: '50%',
+                  backgroundColor: index === currentPhraseIndex ? '#EC4899' : 'rgba(255, 255, 255, 0.3)',
+                  transition: 'all 0.3s ease',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Elementos superpuestos que deben mostrarse sobre el video/contenido estático */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '50%',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
+          display: 'flex',
+          alignItems: 'flex-end',
+          padding: '20px',
+          pointerEvents: 'none',
+        }}>
+          <div 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              backgroundColor: sessionStatus === 'disponible' ? '#10B981' : '#F59E0B',
+              pointerEvents: 'auto',
+            }}
+          >
             <div 
               style={{
-                position: 'absolute',
-                top: '16px',
-                left: '16px',
-                right: '16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '8px',
-                flexWrap: 'wrap',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#FFFFFF',
+                animation: 'pulse 2s ease-in-out infinite',
+              }}
+            />
+            <span 
+              style={{ 
+                fontSize: '12px', 
+                fontWeight: '700',
+                color: '#FFFFFF',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
               }}
             >
-              {/* Badges izquierda */}
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {/* Badge de cámara activa */}
-                <div 
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    backdropFilter: 'blur(8px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '12px',
-                    color: '#FFFFFF',
-                    fontWeight: '600',
-                  }}
-                >
-                  <div 
-                    style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: '#10B981',
-                      animation: 'pulse 2s ease-in-out infinite',
-                    }}
-                  />
-                  EN VIVO
-                </div>
+              {sessionStatus === 'disponible' ? 'Disponible' : 'En Sesión'}
+            </span>
+          </div>
+        </div>
 
-                {/* Badge de ubicación */}
-                <div 
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    backdropFilter: 'blur(8px)',
-                    fontSize: '12px',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  📍 Sucursal {selectedSucursal}
-                </div>
-              </div>
-
-              {/* Alertas en la derecha */}
-              {alertas > 0 && (
-                <div 
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(239, 68, 68, 0.9)',
-                    backdropFilter: 'blur(8px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    color: '#FFFFFF',
-                    fontWeight: 'bold',
-                    animation: 'pulse 2s ease-in-out infinite',
-                  }}
-                >
-                  <AlertTriangle size={16} />
-                  {alertas} Alertas
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {/* Controles de video */}
-        <div 
+        <button
           style={{
             position: 'absolute',
-            bottom: '16px',
+            top: '16px',
             right: '16px',
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            border: 'none',
+            background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+            color: 'white',
+            cursor: 'pointer',
             display: 'flex',
-            gap: '8px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
+            transition: 'all 0.3s ease',
+            zIndex: 10,
+          }}
+          title="Iniciar conversación"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.15)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.6)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.4)';
           }}
         >
-          <button
-            onClick={toggleCamera}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: 'none',
-              backgroundColor: cameraEnabled ? 'rgba(0, 0, 0, 0.7)' : 'rgba(239, 68, 68, 0.9)',
-              backdropFilter: 'blur(8px)',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.3s',
-            }}
-            title={cameraEnabled ? "Deshabilitar cámara" : "Habilitar cámara"}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            {cameraEnabled ? <Eye size={18} /> : <EyeOff size={18} />}
-          </button>
-        </div>
+          <MessageCircle size={22} />
+        </button>
       </div>
 
       {/* Estadísticas */}
-      <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-            +{sucursalesActivas.toLocaleString()}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginTop: '16px' }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#8B5CF6', margin: 0 }}>
+            {activeSessions}
           </p>
-          <p style={{ fontSize: '12px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Sucursales Activas
-          </p>
-        </div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: colores.acento, margin: 0 }}>
-            {precisionIA}%
-          </p>
-          <p style={{ fontSize: '12px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Precisión
+          <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
+            Acompañamientos
           </p>
         </div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: colores.primario, margin: 0 }}>
-            {deteccionesHoy}
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#10B981', margin: 0 }}>
+            {averageWaitTime}min
           </p>
-          <p style={{ fontSize: '12px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Detecciones Hoy
+          <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
+            Respuesta Promedio
+          </p>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#EC4899', margin: 0 }}>
+            {satisfactionScore}★
+          </p>
+          <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
+            Bienestar
           </p>
         </div>
       </div>
@@ -631,7 +601,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                           padding: '8px',
                           borderRadius: '8px',
                           border: 'none',
-                          backgroundColor: isSelected ? colores.primario : 'transparent',
+                          backgroundColor: isSelected ? '#8B5CF6' : 'transparent',
                           color: isDisabled ? colores.textoMedio : isSelected ? 'white' : colores.textoClaro,
                           cursor: isDisabled ? 'not-allowed' : 'pointer',
                           fontSize: '14px',
@@ -663,7 +633,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                         padding: '8px',
                         borderRadius: '8px',
                         border: `1px solid ${colores.borde}`,
-                        backgroundColor: selectedTime === time ? colores.primario : 'transparent',
+                        backgroundColor: selectedTime === time ? '#8B5CF6' : 'transparent',
                         color: selectedTime === time ? 'white' : colores.textoClaro,
                         cursor: 'pointer',
                         fontSize: '13px',
@@ -685,7 +655,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 padding: '12px',
                 borderRadius: '12px',
                 border: 'none',
-                background: (!selectedDate || !selectedTime) ? colores.textoMedio : `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`,
+                background: (!selectedDate || !selectedTime) ? colores.textoMedio : 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
                 color: 'white',
                 fontSize: '16px',
                 fontWeight: '600',
@@ -728,7 +698,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-                Acerca de Sucursal Inteligente
+                Acerca de LUMEL
               </h3>
               <button
                 onClick={() => setShowInfo(false)}
@@ -753,35 +723,35 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 width: '60px',
                 height: '60px',
                 borderRadius: '12px',
-                background: `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`,
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '12px',
               }}>
-                <Shield size={32} color="white" />
+                <Heart size={32} color="white" />
               </div>
               
               <p style={{ fontSize: '14px', color: colores.textoClaro, lineHeight: '1.6', marginBottom: '12px' }}>
-                <strong>Sucursal Inteligente</strong> es tu sistema de seguridad inteligente impulsado por inteligencia artificial.
+                <strong>LUMEL</strong> es tu agente de acompañamiento emocional disponible 24/7.
               </p>
               
               <p style={{ fontSize: '13px', color: colores.textoMedio, lineHeight: '1.6', marginBottom: '12px' }}>
-                Monitoreo en tiempo real con detección automática de amenazas y alertas instantáneas para múltiples sucursales.
+                Ofrecemos apoyo emocional personalizado mediante inteligencia artificial especializada en bienestar mental y prevención del burnout.
               </p>
 
               <div style={{ borderTop: `1px solid ${colores.borde}`, paddingTop: '12px', marginTop: '12px' }}>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Detección inteligente de amenazas
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Acompañamiento confidencial
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Alertas en tiempo real
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Disponibilidad inmediata
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Análisis de video con IA
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Técnicas de bienestar emocional
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '0' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Monitoreo de múltiples sucursales
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Prevención de burnout
                 </p>
               </div>
             </div>
@@ -793,7 +763,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 padding: '12px',
                 borderRadius: '12px',
                 border: 'none',
-                background: `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`,
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
                 color: 'white',
                 fontSize: '14px',
                 fontWeight: '600',
@@ -905,7 +875,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 padding: '14px',
                 borderRadius: '12px',
                 border: 'none',
-                background: `linear-gradient(135deg, ${colores.primario} 100%, ${colores.secundario} 100%)`,
+                background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
                 color: 'white',
                 fontSize: '15px',
                 fontWeight: '600',
@@ -924,23 +894,12 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
       <style>{`
         @keyframes pulse {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
+          50% { opacity: 0.6; }
         }
         
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
         }
       `}</style>
     </div>

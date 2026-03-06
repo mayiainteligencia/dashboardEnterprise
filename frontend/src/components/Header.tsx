@@ -162,7 +162,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
           src={empresa.logo} 
           alt={`${empresa.nombre} logo`}
           style={{
-            height: '70px',
+            height: '128px',
             width: 'auto',
             objectFit: 'contain',
           }}
@@ -435,7 +435,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
           }}
         >
           <img 
-            src="/assets/logosEmpresas/similares.jpeg" 
+            src="/assets/mabeLogoM.png" 
             alt="Perfil"
             style={{
               width: '100%',

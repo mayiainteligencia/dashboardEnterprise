@@ -3,14 +3,13 @@ import { brandingConfig } from '../config/branding';
 import { WelcomeHeader } from './modules/dashboardModules/WelcomeHeader';
 import { HeroCard } from './modules/dashboardModules/Herocard';
 import { MiniCalendarCard } from './modules/dashboardModules/Minicalendarcard';
-import { MedicalIAModule } from './modules/dashboardModules/MedicalIAModule';
-import { SucursalInteligenteModule } from './modules/dashboardModules/SucursalInteligenteModule';
+import { LumelModule } from './modules/dashboardModules/LumelModule';
+import { GuardIAModule } from './modules/dashboardModules/GuardIAModule';
 import { ProductivityChart } from './modules/dashboardModules/Productivitychart';
 import { TopCoursesCard } from './modules/dashboardModules/Topcoursescard';
 import { ExpandableModule } from './modules/dashboardModules/ExpandableModule';
 import { OfertasCard } from './modules/dashboardModules/Ofertascard';
 import { AlertasEmpresa } from './modules/dashboardModules/Alertaempresa';
-import { RecomendadorSimiModule } from './modules/dashboardModules/RecomendadorSimi';
 
 export const Dashboard: React.FC = () => {
   const { colores } = brandingConfig;
@@ -36,11 +35,11 @@ export const Dashboard: React.FC = () => {
             marginBottom: '24px',
           }}
         >
-          {/* Columna 1: Simi Promo (Recomendador) arriba, Ofertas abajo */}
+          {/* Columna 1: GuardIA arriba, Ofertas abajo */}
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Recomendador Simi expandible hacia la derecha */}
+            {/* GuardIA expandible hacia la derecha */}
             <ExpandableModule expandDirection="right">
-              <RecomendadorSimiModule enableVideo={true} />
+              <GuardIAModule />
             </ExpandableModule>
             
             {/* Ofertas Especiales */}
@@ -53,11 +52,11 @@ export const Dashboard: React.FC = () => {
             <MiniCalendarCard />
           </div>
 
-          {/* Columna 3: MedicalIA arriba, Cursos abajo */}
+          {/* Columna 3: Lumel arriba, Cursos abajo */}
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* MedicalIA expandible hacia la izquierda */}
+            {/* Lumel expandible hacia la izquierda */}
             <ExpandableModule expandDirection="left">
-              <MedicalIAModule enableVideo={true} />
+              <LumelModule enableVideo={true} />
             </ExpandableModule>
             <TopCoursesCard />
           </div>

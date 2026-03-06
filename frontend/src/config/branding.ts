@@ -1,8 +1,8 @@
 export const brandingConfig = {
   empresa: {
-    nombre: "Farmacias Similares",
+    nombre: "Mabe",
     eslogan: "Mabe Es muy Bueno",
-    logo: "/assets/logosEmpresas/SimilaresLogo.png",
+    logo: "/assets/logosEmpresas/mabeLogo.png",
   },
   
   colores: {

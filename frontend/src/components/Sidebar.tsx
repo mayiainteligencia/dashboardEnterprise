@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
             }}
           >
             <img 
-              src="/assets/logosEmpresas/similares.jpeg" 
+              src="/assets/mabeLogoM.png" 
               alt={empresa.nombre}
               style={{
                 width: '100%',
