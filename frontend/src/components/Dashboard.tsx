@@ -4,7 +4,7 @@ import { WelcomeHeader } from './modules/dashboardModules/WelcomeHeader';
 import { HeroCard } from './modules/dashboardModules/Herocard';
 import { MiniCalendarCard } from './modules/dashboardModules/Minicalendarcard';
 import { LumelModule } from './modules/dashboardModules/LumelModule';
-import { GuardIAModule } from './modules/dashboardModules/GuardIAModule';
+import { MonitorIAModule } from './modules/dashboardModules/MonitorIA';
 import { ProductivityChart } from './modules/dashboardModules/Productivitychart';
 import { TopCoursesCard } from './modules/dashboardModules/Topcoursescard';
 import { ExpandableModule } from './modules/dashboardModules/ExpandableModule';
@@ -35,11 +35,11 @@ export const Dashboard: React.FC = () => {
             marginBottom: '24px',
           }}
         >
-          {/* Columna 1: GuardIA arriba, Ofertas abajo */}
+          {/* Columna 1: MonitorIA arriba, Ofertas abajo */}
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* GuardIA expandible hacia la derecha */}
+            {/* MonitorIA expandible hacia la derecha */}
             <ExpandableModule expandDirection="right">
-              <GuardIAModule />
+              <MonitorIAModule />
             </ExpandableModule>
             
             {/* Ofertas Especiales */}
@@ -52,9 +52,9 @@ export const Dashboard: React.FC = () => {
             <MiniCalendarCard />
           </div>
 
-          {/* Columna 3: Lumel arriba, Cursos abajo */}
+          {/* Columna 3: MedicalIA arriba, Cursos abajo */}
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Lumel expandible hacia la izquierda */}
+            {/* MedicalIA expandible hacia la izquierda */}
             <ExpandableModule expandDirection="left">
               <LumelModule enableVideo={true} />
             </ExpandableModule>

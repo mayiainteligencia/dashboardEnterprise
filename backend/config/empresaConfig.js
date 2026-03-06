@@ -3,192 +3,313 @@
 
 export const EMPRESA_CONFIG = {
   // Información básica
-  nombre: 'MABE',
-  nombreCompleto: 'MABE - Electrodomésticos',
-  industria: 'Manufactura de Línea Blanca y Electrodomésticos',
-  fundacion: 1946,
+  nombre: 'Grupo MVS',
+  nombreCompleto: 'Grupo MVS - Medios, Telecomunicaciones y Restaurantes',
+  industria: 'Conglomerado de Medios, Telecomunicaciones y Servicios',
+  fundacion: 1967,
   pais: 'México',
-  origenNombre: 'Mabardi + Berrondo = Ma-be',
-  slogan: 'Cuando tu hogar funciona, todo funciona',
-  slogansAnteriores: [
-    'El corazón de tu hogar',
-    'Más vida para tus alimentos (línea refrigeración)'
-  ],
+  fundador: 'Joaquín Vargas Gómez',
+  controlador: 'Familia Vargas',
+  slogan: 'Innovación en medios y telecomunicaciones',
 
   // Descripción corporativa
-  descripcion: 'Empresa mexicana emblemática líder en diseño, manufactura y comercialización de electrodomésticos y línea blanca en toda Latinoamérica. Exporta a más de 70 países.',
+  descripcion: 'Grupo MVS es un importante conglomerado mexicano con presencia en medios de comunicación, telecomunicaciones y servicios restauranteros. Líder en radio, televisión de paga, internet satelital y operación de cadenas de restaurantes.',
 
   // Datos operativos
   operaciones: {
-    plantas: [
-      'Celaya (Guanajuato)',
-      'Salvatierra (Guanajuato)',
-      'Saltillo (Coahuila)',
-      'San Luis Potosí'
-    ],
-    mercados: '70+ países',
-    empleados: '15,000+',
-    lineasProducto: [
-      'Refrigeradores',
-      'Estufas',
-      'Lavadoras',
-      'Secadoras',
-      'Lavavajillas',
-      'Hornos',
-      'Campanas'
-    ],
-    inicioActividad: 'Muebles de cocina (1946)',
-    evolucion: 'De muebles a electrodomésticos de exportación global'
+    estacionesRadio: '12+ estaciones icónicas',
+    canalesTv: 'Múltiples canales de televisión de paga',
+    restaurantes: '200+ ubicaciones en México',
+    empleados: '5,000+',
+    mercados: 'México (cobertura nacional)',
+    divisiones: [
+      'Radio MVS',
+      'Dish México (Telecomunicaciones)',
+      'MVS TV y canales de paga',
+      'CMR (Corporación Mexicana de Restaurantes)',
+      'MVS Educación (UTECA)',
+      'Publicidad exterior',
+      'Editorial'
+    ]
   },
 
-  // Marcas del portafolio
-  marcas: [
-    'MABE',
-    'GE Appliances',
-    'GE Profile',
-    'Monogram',
-    'io mabe',
-    'Easy',
-    'IEM',
-    'Centrales'
-  ],
+  // Marcas y propiedades del portafolio
+  marcas: {
+    radio: [
+      'EXA FM (90.9 FM) - Música pop contemporánea',
+      'La Mejor (100.3 FM) - Música grupera y regional',
+      'MVS Noticias (102.5 FM) - Radio informativa',
+      'FM Globo - Música internacional',
+      'Beat 100.9 FM',
+      'Stereorey'
+    ],
+    television: [
+      'MVS TV',
+      'Multimedios Televisión',
+      'MASTV (anteriormente)',
+      'Canales de paga'
+    ],
+    telecomunicaciones: [
+      'Dish México - TV satelital',
+      'Internet satelital',
+      'Servicios de telecomunicaciones'
+    ],
+    restaurantes: [
+      'Wings (comida casual)',
+      'Chilis (casual dining)',
+      'Red Lobster (mariscos)',
+      'Olive Garden (cocina italiana)',
+      'On The Border (comida Tex-Mex)'
+    ],
+    otros: [
+      'UTECA (Universidad)',
+      'Publicidad exterior',
+      'Editorial MVS'
+    ]
+  },
 
-  // Alianzas estratégicas
-  alianzas: [
-    {
-      empresa: 'Haier',
-      participacion: '48%',
-      desde: 2016,
-      tipo: 'Alianza estratégica'
-    }
-  ],
-
-  // Inversiones recientes
-  inversiones: [
-    {
-      periodo: '2025-2027',
-      monto: '$668 millones USD',
-      destino: 'Infraestructura y desarrollo tecnológico en plantas',
-      plantas: ['Celaya', 'Salvatierra', 'Saltillo', 'San Luis Potosí']
-    }
+  // Servicios principales
+  serviciosPrincipales: [
+    'Transmisión de radio AM/FM',
+    'Producción de contenido audiovisual',
+    'Televisión satelital (Dish)',
+    'Internet satelital',
+    'Operación de cadenas de restaurantes',
+    'Educación universitaria',
+    'Publicidad exterior',
+    'Servicios editoriales'
   ],
 
   // Contactos corporativos
   contacto: {
-    atencionCliente: '461 471 7000 / 461 471 7100',
-    lineaPremium: '461 471 7200',
-    sitioWeb: 'https://www.mabe.com.mx',
-    tiendaEnLinea: 'https://www.tiendamabe.com.mx',
-    servicioTecnico: 'Portal de servicio técnico y centros autorizados'
+    sitioWeb: 'https://www.mvs.com',
+    corporativo: '+52 55 5261 2600',
+    dish: 'https://www.dish.com.mx',
+    exa: 'https://exa.fm',
+    noticias: 'https://mvsnoticias.com'
   },
 
   // Enfoque estratégico
   enfoqueEstrategico: [
-    'Alta tecnología en electrodomésticos',
-    'Sostenibilidad ambiental',
-    'Innovación continua',
-    'Exportación global (70+ países)',
-    'Integración vertical (diseño + manufactura + comercialización)',
-    'Expansión en Latinoamérica'
+    'Liderazgo en medios de comunicación',
+    'Innovación en telecomunicaciones',
+    'Diversificación de negocios',
+    'Cobertura nacional en radio',
+    'Expansión de servicios digitales',
+    'Calidad en entretenimiento y restaurantes',
+    'Transformación digital de operaciones'
   ],
 
-  // Servicios MAYIA prioritarios (según industria manufactura)
+  // Servicios MAYIA prioritarios (según industria de medios y conglomerado)
   serviciosPrioritarios: {
-    operaciones: [
-      'Mantenimiento Predictivo',
-      'Control de Calidad con IA',
-      'Gestión de Producción',
-      'Análisis de Demanda',
-      'Logística optimizada (exportación)'
+    mediosRadio: [
+      '🎙️ MonitorIA - Detección de menciones en transmisiones',
+      'Analytics de audiencia y ratings',
+      'Programación automatizada inteligente',
+      'Análisis de contenido y tendencias',
+      'Recomendación de contenido musical',
+      'Monitoreo de competencia'
+    ],
+    telecomunicaciones: [
+      'Atención a clientes Dish 24/7',
+      'Predicción de churn (cancelaciones)',
+      'Optimización de infraestructura satelital',
+      'Recomendación de paquetes',
+      'Detección de fraude'
+    ],
+    restaurantes: [
+      'Control de inventario inteligente',
+      'Predicción de demanda por ubicación',
+      'Optimización de menús',
+      'Análisis de satisfacción del cliente',
+      'Gestión de personal por turno'
     ],
     rh: [
-      'Asesor en Seguridad en el Trabajo',
-      'Reclutamiento Inteligente',
-      'Evaluación de Desempeño',
-      'Capacitación de personal técnico'
+      'Reclutamiento inteligente',
+      'Evaluación de desempeño',
+      'Capacitación de personal multimedia',
+      'Gestión de talento creativo'
     ],
-    ventas: [
-      'Analytics predictivo',
-      'Recomendador de Productos',
-      'Agentes de Atención al Cliente',
-      'CRM inteligente'
+    atencionCliente: [
+      'Chatbots para Dish y servicios',
+      'WhatsApp automatizado',
+      'Agentes virtuales 24/7',
+      'Gestión de quejas y sugerencias'
     ],
     ti: [
-      'Ciberseguridad 24/7',
-      'Infraestructura Cloud para plantas',
-      'Protección de IP industrial',
-      'Integración de sistemas'
+      'Ciberseguridad para transmisiones',
+      'Infraestructura Cloud',
+      'Gestión de bases de datos multimedia',
+      'Protección de contenido digital'
     ],
-    finanzas: [
-      'Análisis Financiero',
-      'Control de Presupuestos',
-      'ROI de proyectos',
-      'Consolidación financiera'
+    administracion: [
+      'Analytics de negocios multiindustria',
+      'Optimización de procesos',
+      'Control financiero consolidado',
+      'Inteligencia de mercado'
+    ],
+    marketingPublicidad: [
+      'Análisis de campañas publicitarias',
+      'Segmentación de audiencias',
+      'Medición de ROI en pauta',
+      'Predicción de impacto de campañas'
     ]
   },
 
-  // Cursos recomendados (según perfil manufactura)
-  cursosRecomendados: {
-    ingenieria: [
-      'Computer Vision (inspección de calidad)',
-      'ML Fundamentos',
-      'Series Temporales (pronósticos producción)',
-      'Optimización de Procesos',
-      'IoT para manufactura'
+  // MonitorIA - Servicio estrella para medios
+  monitorIA: {
+    descripcion: 'Sistema de monitoreo inteligente que escucha transmisiones de radio en tiempo real para detectar menciones de marcas y palabras clave contratadas',
+    radiosMonitoreadas: [
+      'EXA FM (90.9)',
+      'La Mejor (100.3)',
+      'MVS Radio (102.5)'
     ],
-    gerencia: [
+    funcionalidades: [
+      'Detección automática de palabras clave',
+      'Análisis de audio en tiempo real',
+      'Reportes de menciones con timestamp',
+      'Niveles de confianza por detección',
+      'Dashboard de visualización',
+      'Alertas automáticas',
+      'Métricas de cumplimiento publicitario'
+    ],
+    casos_uso: [
+      'Verificar cumplimiento de pautas publicitarias',
+      'Monitorear menciones de marcas patrocinadoras',
+      'Análisis competitivo de publicidad',
+      'Control de calidad de transmisiones',
+      'Reportes para clientes anunciantes',
+      'Auditoría de contenido comercial'
+    ],
+    beneficios: [
+      'Automatización del monitoreo manual',
+      'Precisión del 99% en detecciones',
+      'Reportes en tiempo real',
+      'Reducción de costos operativos',
+      'Transparencia con anunciantes',
+      'Optimización de inventario publicitario'
+    ]
+  },
+
+  // Cursos recomendados (según perfil de conglomerado de medios)
+  cursosRecomendados: {
+    gerentes: [
       'IA para Gerentes',
-      'Gestión del Cambio',
+      'Analytics de Negocios',
+      'Transformación Digital',
       'Toma de Decisiones Estratégicas',
-      'Innovación Empresarial'
+      'Liderazgo en la Era Digital'
+    ],
+    medios: [
+      'IA para Medios y Comunicación',
+      'Análisis de Audiencias',
+      'Machine Learning para Contenido',
+      'NLP para Análisis de Audio',
+      'Computer Vision para Video'
+    ],
+    ventas: [
+      'IA para Trabajo Inteligente',
+      'Comunicación Efectiva',
+      'Fundamentos del Prompting',
+      'Analytics para Ventas'
+    ],
+    ti: [
+      'Ciberseguridad',
+      'Python Fundamentos',
+      'SQL Básico',
+      'ML para Negocios',
+      'Cloud Computing',
+      'Streaming y CDN'
     ],
     operaciones: [
-      'Python para Análisis',
+      'Series Temporales',
       'Análisis Estadístico',
-      'SQL Avanzado',
-      'Tableau Visualización'
+      'Data Wrangling',
+      'Tableau Visualización',
+      'Optimización de Procesos'
     ],
-    calidad: [
-      'Computer Vision',
-      'ML para Negocios',
-      'Análisis Estadístico',
-      'ISO 9001 con IA'
+    restaurantes: [
+      'IA para Retail',
+      'Predicción de Demanda',
+      'Gestión de Inventarios',
+      'Analytics de Clientes'
     ]
   },
 
-  // Casos de uso específicos de IA para manufactura de línea blanca
+  // Casos de uso específicos de IA por división
   casosDeUsoIA: {
-    produccion: 'Mantenimiento predictivo de líneas de ensamblaje (refrigeradores, estufas, lavadoras)',
-    calidad: 'Inspección visual automatizada de acabados y ensamblajes',
-    demanda: 'Pronóstico de ventas por producto y región (70 países)',
-    logistica: 'Optimización de exportaciones y rutas internacionales',
-    diseno: 'Simulación y pruebas virtuales de nuevos modelos',
-    energia: 'Optimización de consumo energético en plantas',
-    inventario: 'Control de componentes para múltiples líneas de producto',
-    seguridad: 'Detección de riesgos en planta y cumplimiento normativo'
+    radio: {
+      monitoreo: 'MonitorIA detecta automáticamente menciones de marcas en transmisiones en vivo',
+      programacion: 'IA sugiere playlist basadas en horario, audiencia y tendencias',
+      audiencia: 'Predicción de ratings por contenido y horario',
+      contenido: 'Análisis de sentimiento de llamadas y comentarios',
+      publicidad: 'Optimización de inventario publicitario por horario'
+    },
+    television: {
+      recomendacion: 'Sistema de recomendación de contenido para Dish',
+      analisis: 'Análisis de preferencias de suscriptores',
+      produccion: 'IA para edición automática de contenido',
+      subtitulos: 'Generación automática de subtítulos'
+    },
+    restaurantes: {
+      demanda: 'Predicción de demanda por día, horario y clima',
+      inventario: 'Optimización de stock de ingredientes',
+      precios: 'Análisis dinámico de precios',
+      experiencia: 'Análisis de sentimiento en reseñas'
+    },
+    telecomunicaciones: {
+      churn: 'Predicción de cancelaciones de suscriptores Dish',
+      soporte: 'Chatbot técnico para troubleshooting',
+      upselling: 'Recomendación inteligente de upgrades',
+      red: 'Optimización de infraestructura satelital'
+    },
+    general: {
+      rh: 'Reclutamiento inteligente multiindustria',
+      finanzas: 'Predicción de ingresos consolidados',
+      riesgos: 'Análisis de riesgos operativos',
+      fraude: 'Detección de anomalías financieras'
+    }
   },
 
   // Métricas clave del negocio
-  metricasClave: [
-    'OEE (Overall Equipment Effectiveness)',
-    'Unidades producidas por línea',
-    'Tasa de defectos por millón',
-    'Tiempo de inactividad no programado',
-    'Eficiencia energética',
-    'Cumplimiento de órdenes de exportación',
-    'Rotación de inventario de componentes',
-    'Costo por unidad producida'
-  ],
+  metricasClave: {
+    radio: [
+      'Rating por horario',
+      'Share de audiencia',
+      'Cumplimiento de pautas publicitarias (MonitorIA)',
+      'Ingresos por publicidad',
+      'Costo por mil (CPM)'
+    ],
+    television: [
+      'Suscriptores activos Dish',
+      'Tasa de churn',
+      'ARPU (ingreso promedio por usuario)',
+      'Uptime de servicios',
+      'NPS de clientes'
+    ],
+    restaurantes: [
+      'Ticket promedio',
+      'Rotación de mesas',
+      'Satisfacción del cliente',
+      'Eficiencia operativa',
+      'Ventas por ubicación'
+    ],
+    consolidado: [
+      'EBITDA por división',
+      'ROI de inversiones',
+      'Crecimiento año contra año',
+      'Participación de mercado',
+      'Índice de innovación'
+    ]
+  },
 
-  // Tecnologías en productos
-  tecnologiasProducto: [
-    'Internet de las Cosas (IoT)',
-    'Eficiencia energética',
-    'Refrigeración inverter',
-    'Control inteligente de temperatura',
-    'Conectividad WiFi',
-    'Electrodomésticos inteligentes'
-  ]
+  // Competidores principales por división
+  competencia: {
+    radio: ['Grupo Radio Centro', 'Grupo Imagen', 'Televisa Radio', 'Grupo ACIR'],
+    television: ['Sky México', 'Izzi', 'Totalplay', 'Megacable'],
+    restaurantes: ['Alsea', 'Grupo Anderson\'s', 'Operadores independientes'],
+    medios_general: ['Televisa', 'TV Azteca', 'Grupo Imagen', 'Multimedios']
+  }
 };
 
 // Función helper para obtener información de la empresa
@@ -198,11 +319,28 @@ export function getEmpresaInfo(campo) {
 
 // Función para generar descripción contextual
 export function getDescripcionContextual() {
-  const { nombreCompleto, slogan, fundacion, operaciones, inversiones } = EMPRESA_CONFIG;
+  const { nombreCompleto, fundacion, fundador, operaciones } = EMPRESA_CONFIG;
   
-  return `${nombreCompleto} - "${slogan}". Empresa mexicana emblemática fundada en ${fundacion}, 
-líder en electrodomésticos con ${operaciones.plantas.length} plantas en México. 
-Inversión 2025-2027: ${inversiones[0].monto} en infraestructura y tecnología.`;
+  return `${nombreCompleto}, fundado en ${fundacion} por ${fundador}, es un conglomerado líder 
+con ${operaciones.estacionesRadio}, televisión satelital (Dish México), 
+${operaciones.restaurantes} en cadenas premium, y presencia en educación y publicidad.`;
+}
+
+// Función para obtener info de MonitorIA
+export function getMonitorIAInfo() {
+  return EMPRESA_CONFIG.monitorIA;
+}
+
+// Función para obtener servicios por división
+export function getServiciosPorDivision(division) {
+  const servicios = {
+    radio: EMPRESA_CONFIG.serviciosPrioritarios.mediosRadio,
+    tv: EMPRESA_CONFIG.serviciosPrioritarios.telecomunicaciones,
+    restaurantes: EMPRESA_CONFIG.serviciosPrioritarios.restaurantes,
+    ti: EMPRESA_CONFIG.serviciosPrioritarios.ti
+  };
+  
+  return servicios[division] || [];
 }
 
 export default EMPRESA_CONFIG;

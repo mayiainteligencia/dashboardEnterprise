@@ -283,7 +283,7 @@ export const SidebarR: React.FC<SidebarRProps> = ({ onClose }) => {
                 flex: 1,
                 padding: '16px',
                 overflow: 'auto',
-                color: colores.textoClaro,
+                color: colores.textoEnOscuro,
                 display: isMinimized ? 'none' : 'flex',
                 flexDirection: 'column',
                 gap: '12px',

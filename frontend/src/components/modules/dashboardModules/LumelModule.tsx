@@ -425,7 +425,10 @@ export const LumelModule: React.FC<LumelModuleProps> = ({
           </div>
         </div>
 
-        <button
+        <a
+          href="https://lumel-gochi.netlify.app/"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
             position: 'absolute',
             top: '16px',
@@ -443,8 +446,9 @@ export const LumelModule: React.FC<LumelModuleProps> = ({
             boxShadow: '0 4px 16px rgba(139, 92, 246, 0.4)',
             transition: 'all 0.3s ease',
             zIndex: 10,
+            textDecoration: 'none',
           }}
-          title="Iniciar conversación"
+          title="Conversar con LUMEL"
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.15)';
             e.currentTarget.style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.6)';
@@ -455,7 +459,7 @@ export const LumelModule: React.FC<LumelModuleProps> = ({
           }}
         >
           <MessageCircle size={22} />
-        </button>
+        </a>
       </div>
 
       {/* Estadísticas */}

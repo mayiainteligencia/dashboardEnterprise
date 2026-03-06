@@ -1,61 +1,70 @@
 export const brandingConfig = {
   empresa: {
-    nombre: "Mabe",
-    eslogan: "Mabe Es muy Bueno",
-    logo: "/assets/logosEmpresas/mabeLogo.png",
+    nombre: "Grupo MVS",
+    eslogan: "MVS",
+    logo: "/assets/logosEmpresas/mvsLogo.png",
   },
-  
+
   colores: {
-    // Colores MABE Oficiales - TEMA CLARO CON COLORES SÓLIDOS
-    primario: "#008CAE",           // Azul turquesa MABE
-    primarioOscuro: "#006B8A",     // Azul turquesa oscuro
-    primarioClaro: "#B3E5F0",      // Azul claro SÓLIDO
-    
-    secundario: "#F5F7FA",         // Gris claro
-    acento: "#F27405",             // Naranja MABE
-    acentoOscuro: "#D66304",       // Naranja oscuro
-    
-    peligro: "#EF4444",            
-    advertencia: "#F59E0B",        
-    exito: "#10B981",              
-    
-    // Fondos - COLORES SÓLIDOS
-    fondoPrincipal: "#FFFFFF",     // Blanco puro
-    fondoSecundario: "#F8FAFB",    // Gris muy claro
-    fondoTerciario: "#E8EDF2",     // Gris claro SÓLIDO
-    fondoClaro: "#FFFFFF",         
-    
-    // Textos - ✅ CORREGIDOS PARA TEMA CLARO CON BUEN CONTRASTE
-    textoClaro: "#1A202C",         // Negro/gris oscuro (texto principal - WCAG AAA)
-    textoMedio: "#4A5568",         // Gris medio (WCAG AAA)
-    textoOscuro: "#718096",        // Gris claro (textos secundarios)
-    textoEnOscuro: "#FFFFFF",      // Blanco (para fondos oscuros)
-    
-    // Bordes - COLORES SÓLIDOS
-    borde: "#CBD5E0",              // Gris claro SÓLIDO
-    bordeHover: "#5CB8D1",         // Azul claro SÓLIDO
-    
+    // Colores MVS Oficiales - TEMA CLARO
+    primario: "#E62463",           // Rosa/Magenta MVS (principal)
+    primarioOscuro: "#B81A4D",     // Rosa oscuro (hover, activo)
+    primarioClaro: "#FDE8EF",      // Rosa muy claro (fondos sutiles)
+
+    secundario: "#705091",         // Morado MVS
+    secundarioOscuro: "#503870",   // Morado oscuro
+    secundarioClaro: "#EDE8F5",    // Morado muy claro
+
+    acento: "#F8CB0C",             // Amarillo MVS (highlights, badges, alertas)
+    acentoOscuro: "#C9A200",       // Amarillo oscuro
+    acentoClaro: "#FFFBE6",        // Amarillo muy claro
+
+    complementario: "#EF7D58",     // Coral/Salmón MVS (apoyo, íconos, tags)
+    complementarioOscuro: "#C95A34",// Coral oscuro
+    complementarioClaro: "#FEF0EB",// Coral muy claro
+
+    peligro: "#E62463",            // Usa el primario para errores/peligro
+    advertencia: "#F8CB0C",        // Amarillo para advertencias
+    exito: "#10B981",              // Verde neutro para éxito (no hay verde en paleta)
+
+    // Fondos - CLAROS Y LIMPIOS
+    fondoPrincipal: "#ffffff",     // Blanco puro
+    fondoSecundario: "#FAF9FB",    // Gris con tinte morado muy sutil
+    fondoTerciario: "#F3EFF7",     // Morado muy claro para secciones
+    fondoClaro: "#FFFFFF",
+
+    // Textos - ALTO CONTRASTE SOBRE FONDOS CLAROS
+    textoClaro: "#1f1f68",         // Negro azulado (texto principal - WCAG AAA)
+    textoMedio: "#4A3F5C",         // Morado gris oscuro (WCAG AAA)
+    textoOscuro: "#8B7DA0",        // Morado claro (textos secundarios/placeholders)
+    textoEnOscuro: "#FFFFFF",      // Blanco (para fondos oscuros/primario)
+
+    // Bordes
+    borde: "#DDD5E8",              // Morado gris suave
+    bordeHover: "#E62463",         // Rosa al hacer hover
+
     // Gradientes
-    gradientePrimario: "linear-gradient(135deg, #008CAE 0%, #3BA5C9 100%)",
-    gradienteSecundario: "linear-gradient(135deg, #F27405 0%, #FF8C1A 100%)",
-    gradienteAcento: "linear-gradient(135deg, #B3E5F0 0%, #FFFFFF 100%)",
-    
-    // Glass effects - COLOR SÓLIDO
-    fondoGlass: "#E6F7FB",         // Azul muy claro SÓLIDO
-    
-    // Sombras
-    sombra: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    sombraMedia: "0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05)",
-    sombraGrande: "0 10px 15px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05)",
+    gradientePrimario: "linear-gradient(135deg, #E62463 0%, #705091 100%)",
+    gradienteSecundario: "linear-gradient(135deg, #705091 0%, #EF7D58 100%)",
+    gradienteAcento: "linear-gradient(135deg, #F8CB0C 0%, #EF7D58 100%)",
+    gradienteDark: "linear-gradient(135deg, #1A1A2E 0%, #2D1B4E 100%)",
+
+    // Glass / efectos de superficie
+    fondoGlass: "#F8F4FD",         // Morado muy suave
+
+    // Sombras con tinte del brand
+    sombra: "0 1px 3px rgba(112, 80, 145, 0.10), 0 1px 2px rgba(112, 80, 145, 0.06)",
+    sombraMedia: "0 4px 6px rgba(112, 80, 145, 0.10), 0 2px 4px rgba(112, 80, 145, 0.06)",
+    sombraGrande: "0 10px 15px rgba(230, 36, 99, 0.10), 0 4px 6px rgba(112, 80, 145, 0.07)",
   },
-  
+
   metricas: {
     empleados: 568,
     departamentos: 9,
     tareasCompletadas: 13,
     progreso: 70,
   },
-  
+
   ia: {
     nombre: "MAYIA",
     modelo: "Gemini 2.5 Flash",

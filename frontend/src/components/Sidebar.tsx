@@ -55,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
               width: '48px',
               height: '48px',
               borderRadius: '12px',
-              background: `linear-gradient(135deg, ${colores.primario} 0%, ${colores.secundario} 0%)`,
+              background: `linear-gradient(135deg, ${colores.fondoGlass} 0%, ${colores.fondoGlass} 0%)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
             }}
           >
             <img 
-              src="/assets/mabeLogoM.png" 
+              src="/assets/logosEmpresas/mvsLogo.png" 
               alt={empresa.nombre}
               style={{
                 width: '100%',
