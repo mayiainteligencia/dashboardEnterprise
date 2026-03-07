@@ -1,6 +1,16 @@
 import React from 'react';
 import { 
   LayoutDashboard,
+  TrendingUp,
+  Shield,
+  GraduationCap,
+  Code2,
+} from 'lucide-react';
+import { brandingConfig } from '../config/branding';
+
+// Import anterior por si llegase a utilizarse nuevamente
+/* import { 
+  LayoutDashboard,
   Users,
   DollarSign,
   Package,
@@ -10,15 +20,15 @@ import {
   Shield,
   GraduationCap,
   Code2,
-} from 'lucide-react';
-import { brandingConfig } from '../config/branding';
+} from 'lucide-react'; */
+ 
 
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
 }
-
-const menuItems = [
+// Dejamos el menú anterior por si alguna de las secciones o todas las secciones se llegasen a requerir después
+/* const menuItems = [
   { id: 'dashboard', nombre: 'Dashboard General', icono: LayoutDashboard },
   { id: 'rh', nombre: 'Recursos Humanos', icono: Users },
   { id: 'finanzas', nombre: 'Finanzas y Contabilidad', icono: DollarSign },
@@ -26,7 +36,15 @@ const menuItems = [
   { id: 'ventas', nombre: 'Ventas y Marketing', icono: TrendingUp },
   { id: 'ti', nombre: 'Tecnologías de la Información', icono: Cpu },
   { id: 'administracion', nombre: 'Administración', icono: Building2 },
+  { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp}
 ];
+ */
+
+const menuItems = [
+  { id: 'dashboard', nombre: 'Dashboard General', icono: LayoutDashboard },
+  { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp}
+];
+
 
 const extraSections = [
   { id: 'ciberseguridad', nombre: 'CiberSeguridad', icono: Shield },
@@ -116,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
       </div>
 
       {/* Menú Principal */}
-      <nav style={{ flex: 1, padding: '0 12px', overflow: 'auto' }}>
+      <nav style={{ flex: '0 0 auto', padding: '0 12px', overflow: 'auto' }}>
         {menuItems.map((item) => {
           const Icon = item.icono;
           const isActive = activeSection === item.id;
