@@ -4,7 +4,6 @@ import { WelcomeHeader } from './modules/dashboardModules/WelcomeHeader';
 import { HeroCard } from './modules/dashboardModules/Herocard';
 import { MiniCalendarCard } from './modules/dashboardModules/Minicalendarcard';
 import { MedicalIAModule } from './modules/dashboardModules/MedicalIAModule';
-import { SucursalInteligenteModule } from './modules/dashboardModules/SucursalInteligenteModule';
 import { ProductivityChart } from './modules/dashboardModules/Productivitychart';
 import { TopCoursesCard } from './modules/dashboardModules/Topcoursescard';
 import { ExpandableModule } from './modules/dashboardModules/ExpandableModule';
