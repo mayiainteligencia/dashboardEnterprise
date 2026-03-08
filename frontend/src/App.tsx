@@ -11,6 +11,7 @@ import { Administracion } from './components/departamentos/Administracion';
 import { Ciberseguridad } from './components/departamentos/Ciberseguridad';
 import { Playground } from './components/departamentos/Playground';
 import { Academia } from './components/departamentos/Academia';
+import { Analiticos } from './components/departamentos/Analiticos';
 import { SidebarR } from './components/sideBarR';
 import { brandingConfig } from './config/branding';
 
@@ -31,6 +32,7 @@ function App() {
       ciberseguridad: 'CiberSeguridad',
       playground: 'Playground',
       academia: 'Academia',
+      analiticos: 'Analíticos',
     };
     return titulos[activeSection] || 'Dashboard';
   };
@@ -57,6 +59,8 @@ function App() {
         return <Playground />;
       case 'academia':
         return <Academia />;
+      case 'analiticos':
+        return <Analiticos />;
       default:
         return <Dashboard />;
     }
@@ -82,21 +86,15 @@ function App() {
       
       {/* CONTENIDO */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {/* Header */}
         <Header title={getTitulo()} />
-        
-        {/* Main content */}
         <div style={{ flex: 1, overflow: 'auto', padding: '24px' }}>
           {renderContent()}
         </div>
       </div>
 
       <div>
-        <SidebarR
-          onClose={onClose}
-        />
+        <SidebarR onClose={onClose} />
       </div>
-
     </div>
   );
 }
