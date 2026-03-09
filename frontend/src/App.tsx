@@ -12,12 +12,10 @@ import { Ciberseguridad } from './components/departamentos/Ciberseguridad';
 import { Playground } from './components/departamentos/Playground';
 import { Academia } from './components/departamentos/Academia';
 import { Analiticos } from './components/departamentos/Analiticos';
-import { SidebarR } from './components/sideBarR';
 import { brandingConfig } from './config/branding';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
-  const [onClose] = useState();
   const { colores } = brandingConfig;
 
   const getTitulo = () => {
@@ -39,61 +37,42 @@ function App() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'rh':
-        return <RecursosHumanos />;
-      case 'finanzas':
-        return <FinanzasContabilidad />;
-      case 'operaciones':
-        return <Operaciones />;
-      case 'ventas':
-        return <VentasMarketing />;
-      case 'ti':
-        return <TecnologiasInformacion />;
-      case 'administracion':
-        return <Administracion />;
-      case 'ciberseguridad':
-        return <Ciberseguridad />;
-      case 'playground':
-        return <Playground />;
-      case 'academia':
-        return <Academia />;
-      case 'analiticos':
-        return <Analiticos />;
-      default:
-        return <Dashboard />;
+      case 'dashboard':    return <Dashboard />;
+      case 'rh':           return <RecursosHumanos />;
+      case 'finanzas':     return <FinanzasContabilidad />;
+      case 'operaciones':  return <Operaciones />;
+      case 'ventas':       return <VentasMarketing />;
+      case 'ti':           return <TecnologiasInformacion />;
+      case 'administracion': return <Administracion />;
+      case 'ciberseguridad': return <Ciberseguridad />;
+      case 'playground':   return <Playground />;
+      case 'academia':     return <Academia />;
+      case 'analiticos':   return <Analiticos />;
+      default:             return <Dashboard />;
     }
   };
 
   return (
-    <div 
-      style={{ 
+    <div
+      style={{
         display: 'flex',
         width: '100vw',
         height: '100vh',
         overflow: 'hidden',
-        backgroundColor: colores.fondoPrincipal
+        backgroundColor: colores.fondoPrincipal,
       }}
     >
       {/* SIDEBAR */}
       <div style={{ width: '240px', flexShrink: 0 }}>
-        <Sidebar 
-          activeSection={activeSection} 
-          onSectionChange={setActiveSection} 
-        />
+        <Sidebar activeSection={activeSection} onSectionChange={setActiveSection} />
       </div>
-      
+
       {/* CONTENIDO */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <Header title={getTitulo()} />
         <div style={{ flex: 1, overflow: 'auto', padding: '24px' }}>
           {renderContent()}
         </div>
-      </div>
-
-      <div>
-        <SidebarR onClose={onClose} />
       </div>
     </div>
   );
