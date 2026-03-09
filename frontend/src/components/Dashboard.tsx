@@ -40,7 +40,7 @@ export const Dashboard: React.FC = () => {
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* Recomendador Simi expandible hacia la derecha */}
             <ExpandableModule expandDirection="right">
-              <RecomendadorSimiModule enableVideo={true} />
+             <SucursalInteligenteModule /> 
             </ExpandableModule>
             
             {/* Ofertas Especiales */}
