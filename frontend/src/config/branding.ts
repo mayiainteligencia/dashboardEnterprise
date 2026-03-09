@@ -1,47 +1,47 @@
 export const brandingConfig = {
   empresa: {
-    nombre: "Farmacias Similares",
-    eslogan: "Mabe Es muy Bueno",
-    logo: "/assets/logosEmpresas/SimilaresLogo.png",
+    nombre: "Suzuki",
+    eslogan: "By your side",
+    logo: "/assets/logosEmpresas/suzuki.png",
   },
   
   colores: {
-    // Colores MABE Oficiales - TEMA CLARO CON COLORES SÓLIDOS
-    primario: "#008CAE",           // Azul turquesa MABE
-    primarioOscuro: "#006B8A",     // Azul turquesa oscuro
-    primarioClaro: "#B3E5F0",      // Azul claro SÓLIDO
+    // Colores Suzuki Oficiales - Rojo #E20A17 | Azul #003399
+    primario: "#003399",           // Azul Suzuki oficial
+    primarioOscuro: "#002270",     // Azul Suzuki oscuro
+    primarioClaro: "#D6E0F5",      // Azul muy claro (tint suave)
     
-    secundario: "#F5F7FA",         // Gris claro
-    acento: "#F27405",             // Naranja MABE
-    acentoOscuro: "#D66304",       // Naranja oscuro
-    
+    secundario: "#F5F6FA",         // Gris muy frío (complementa el azul)
+    acento: "#E20A17",             // Rojo Suzuki oficial
+    acentoOscuro: "#B30813",       // Rojo oscuro
+
     peligro: "#EF4444",            
     advertencia: "#F59E0B",        
     exito: "#10B981",              
     
-    // Fondos - COLORES SÓLIDOS
+    // Fondos - limpios y neutros
     fondoPrincipal: "#FFFFFF",     // Blanco puro
-    fondoSecundario: "#F8FAFB",    // Gris muy claro
-    fondoTerciario: "#E8EDF2",     // Gris claro SÓLIDO
+    fondoSecundario: "#F7F8FC",    // Gris muy frío con toque azul
+    fondoTerciario: "#EDF0F8",     // Azul hielo suave
     fondoClaro: "#FFFFFF",         
     
-    // Textos - ✅ CORREGIDOS PARA TEMA CLARO CON BUEN CONTRASTE
+    // Textos
     textoClaro: "#1A202C",         // Negro/gris oscuro (texto principal - WCAG AAA)
     textoMedio: "#4A5568",         // Gris medio (WCAG AAA)
     textoOscuro: "#718096",        // Gris claro (textos secundarios)
     textoEnOscuro: "#FFFFFF",      // Blanco (para fondos oscuros)
     
-    // Bordes - COLORES SÓLIDOS
-    borde: "#CBD5E0",              // Gris claro SÓLIDO
-    bordeHover: "#5CB8D1",         // Azul claro SÓLIDO
+    // Bordes
+    borde: "#CBD5E0",              // Gris neutro
+    bordeHover: "#6685CC",         // Azul Suzuki suavizado
     
     // Gradientes
-    gradientePrimario: "linear-gradient(135deg, #008CAE 0%, #3BA5C9 100%)",
-    gradienteSecundario: "linear-gradient(135deg, #F27405 0%, #FF8C1A 100%)",
-    gradienteAcento: "linear-gradient(135deg, #B3E5F0 0%, #FFFFFF 100%)",
+    gradientePrimario: "linear-gradient(135deg, #003399 0%, #2952B3 100%)",
+    gradienteSecundario: "linear-gradient(135deg, #E20A17 0%, #F04040 100%)",
+    gradienteAcento: "linear-gradient(135deg, #D6E0F5 0%, #FFFFFF 100%)",
     
-    // Glass effects - COLOR SÓLIDO
-    fondoGlass: "#E6F7FB",         // Azul muy claro SÓLIDO
+    // Glass effect
+    fondoGlass: "#EAEFFa",         // Azul hielo muy suave
     
     // Sombras
     sombra: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",

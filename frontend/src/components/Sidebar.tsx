@@ -82,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
             }}
           >
             <img 
-              src="/assets/logosEmpresas/similares.jpeg" 
+              src="/assets/logosEmpresas/suzuki-logo-0-1.png" 
               alt={empresa.nombre}
               style={{
                 width: '100%',
