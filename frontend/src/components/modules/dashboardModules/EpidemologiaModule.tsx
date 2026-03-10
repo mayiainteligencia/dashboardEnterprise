@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, MoreVertical, Heart, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, MoreVertical, Heart, X, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { brandingConfig } from '../../../config/branding';
 
-interface MedicalIAModuleProps {
+interface EpidemologiaModuleProps {
   videoStreamUrl?: string;
   apiEndpoint?: string;
   enableVideo?: boolean;
+  onNavigate?: (section: string) => void;
 }
 
-export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({ 
+export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({ 
   videoStreamUrl, 
   apiEndpoint,
-  enableVideo = false 
+  enableVideo = false,
+  onNavigate,
 }) => {
   const { colores } = brandingConfig;
   
@@ -37,13 +39,13 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
 
   // Frases motivacionales sobre bienestar emocional
   const wellnessIdeas = [
-    "Tu bienestar importa 💜",
-    "Pausas = Energía ⚡",
-    "Hablar ayuda 💜",
-    "Cuida tu mente 💜",
-    "Respira profundo 💜",
-    "No estás solo 💜",
-    "Progresa a tu ritmo 💜",
+    "🦠 Monitoreando brotes activos",
+    "📍 Análisis por región en curso",
+    "📈 Pico estacional detectado",
+    "🔬 Correlación consumo-enfermedad",
+    "⚡ Alerta epidemiológica activa",
+    "🗺️ Mapa de calor actualizado",
+    "✅ Sin anomalías detectadas",
   ];
 
   // Rotación automática de frases cada 5 segundos
@@ -161,10 +163,10 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
           </div>
           <div>
             <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-             Medikal-IA
+             SIMI Inteligencia
             </h3>
             <p style={{ fontSize: '12px', color: colores.textoMedio, margin: 0 }}>
-               Consulta-IA Similares
+               Epidemiológica
             </p>
           </div>
         </div>
@@ -197,7 +199,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
             >
               <button
                 onClick={() => {
-                  setShowCalendar(true);
+                  onNavigate?.('analiticos');
                   setShowMenu(false);
                 }}
                 style={{
@@ -214,7 +216,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colores.fondoTerciario}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
-                Agendar Reunión para Cotización
+                Ver Vigilancia Epidemiológica
               </button>
               
               <button
@@ -256,7 +258,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
       >
         {enableVideo ? (
           <video 
-            src={videoStreamUrl || "/assets/simiVideo.mp4"}
+            src={videoStreamUrl || "/assets/simiEpidemiologo.mp4"}
             autoPlay 
             muted 
             loop
@@ -298,87 +300,11 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
             width: '100%',
             height: '100%',
             background: colores.fondoTerciario,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             borderRadius: '16px',
-          }}>
-            {/* Contenido estático aquí */}
-            <div style={{ textAlign: 'center', padding: '20px' }}>
-              <div 
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '30px',
-                  background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 16px',
-                }}
-              >
-                <Heart size={28} color="white" />
-              </div>
-              <p style={{ color: colores.textoClaro, fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
-                MEDIKAL-IA
-              </p>
-              <p style={{ color: colores.textoMedio, fontSize: '12px' }}>
-                Consulta-IA Similares
-              </p>
-            </div>
-          </div>
+          }} />
         )}
 
-        {/* Marco con frases motivacionales - NUEVO */}
-        <div style={{
-          position: 'absolute',
-          bottom: '60px',
-          right: '16px',
-          maxWidth: '200px',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '12px',
-          padding: '10px 16px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-          transition: 'all 0.5s ease',
-          animation: 'fadeIn 0.5s ease',
-        }}>
-          <p style={{
-            color: '#FFFFFF',
-            fontSize: '11px',
-            lineHeight: '1.4',
-            margin: 0,
-            textAlign: 'center',
-            fontWeight: '500',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
-          }}>
-            {wellnessIdeas[currentPhraseIndex]}
-          </p>
-          
-          {/* Indicadores de progreso */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '4px',
-            marginTop: '8px',
-          }}>
-            {wellnessIdeas.map((_, index) => (
-              <div
-                key={index}
-                style={{
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  backgroundColor: index === currentPhraseIndex ? '#EC4899' : 'rgba(255, 255, 255, 0.3)',
-                  transition: 'all 0.3s ease',
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Elementos superpuestos que deben mostrarse sobre el video/contenido estático */}
+        {/* Elementos superpuestos sobre el video */}
         <div style={{
           position: 'absolute',
           bottom: 0,
@@ -465,7 +391,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
             {activeSessions}
           </p>
           <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Acompañamientos
+            Zonas Monitoreadas
           </p>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -473,7 +399,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
             {averageWaitTime}min
           </p>
           <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Respuesta Promedio
+            Actualización
           </p>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -481,10 +407,36 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
             {satisfactionScore}★
           </p>
           <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '4px 0 0 0' }}>
-            Bienestar
+            Precisión IA
           </p>
         </div>
       </div>
+
+      {/* Botón principal de navegación */}
+      <button
+        onClick={() => onNavigate?.('analiticos')}
+        style={{
+          marginTop: '16px',
+          width: '100%',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          border: 'none',
+          background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+          color: 'white',
+          fontSize: '14px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          transition: 'opacity 0.2s',
+        }}
+        onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+      >
+        Ver Vigilancia Epidemiológica <ArrowRight size={16} />
+      </button>
 
       {/* Modal de Calendario */}
       {showCalendar && (
@@ -698,7 +650,7 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-                Acerca de MedicalIA
+                Acerca de SIMI Epidemiológica
               </h3>
               <button
                 onClick={() => setShowInfo(false)}
@@ -733,25 +685,25 @@ export const MedicalIAModule: React.FC<MedicalIAModuleProps> = ({
               </div>
               
               <p style={{ fontSize: '14px', color: colores.textoClaro, lineHeight: '1.6', marginBottom: '12px' }}>
-                <strong>MedicalIA</strong> es tu agente de acompañamiento emocional disponible 24/7.
+                <strong>SIMI Inteligencia Epidemiológica</strong> monitorea patrones de enfermedad y consumo de medicamentos en tiempo real.
               </p>
               
               <p style={{ fontSize: '13px', color: colores.textoMedio, lineHeight: '1.6', marginBottom: '12px' }}>
-                Ofrecemos apoyo emocional personalizado mediante inteligencia artificial especializada en bienestar mental y prevención del burnout.
+                Detecta brotes, tendencias estacionales y picos de demanda para anticipar necesidades de salud en tu zona.
               </p>
 
               <div style={{ borderTop: `1px solid ${colores.borde}`, paddingTop: '12px', marginTop: '12px' }}>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Acompañamiento confidencial
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Monitoreo epidemiológico por región
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Disponibilidad inmediata
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Alertas de brotes y picos de demanda
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '8px' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Técnicas de bienestar emocional
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Análisis de patrones estacionales
                 </p>
                 <p style={{ fontSize: '12px', color: colores.textoMedio, marginBottom: '0' }}>
-                  <strong style={{ color: colores.textoClaro }}>✓</strong> Prevención de burnout
+                  <strong style={{ color: colores.textoClaro }}>✓</strong> Correlación consumo-enfermedad con IA
                 </p>
               </div>
             </div>

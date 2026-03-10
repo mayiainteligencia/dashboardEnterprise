@@ -37,7 +37,7 @@ function App() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'dashboard':    return <Dashboard />;
+      case 'dashboard':    return <Dashboard onSectionChange={setActiveSection} />;
       case 'rh':           return <RecursosHumanos />;
       case 'finanzas':     return <FinanzasContabilidad />;
       case 'operaciones':  return <Operaciones />;

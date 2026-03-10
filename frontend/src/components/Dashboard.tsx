@@ -3,15 +3,19 @@ import { brandingConfig } from '../config/branding';
 import { WelcomeHeader } from './modules/dashboardModules/WelcomeHeader';
 import { HeroCard } from './modules/dashboardModules/Herocard';
 import { MiniCalendarCard } from './modules/dashboardModules/Minicalendarcard';
-import { MedicalIAModule } from './modules/dashboardModules/MedicalIAModule';
+import { EpidemologiaModule } from './modules/dashboardModules/EpidemologiaModule';
 import { ProductivityChart } from './modules/dashboardModules/Productivitychart';
 import { TopCoursesCard } from './modules/dashboardModules/Topcoursescard';
 import { ExpandableModule } from './modules/dashboardModules/ExpandableModule';
 import { OfertasCard } from './modules/dashboardModules/Ofertascard';
 import { AlertasEmpresa } from './modules/dashboardModules/Alertaempresa';
-import { RecomendadorSimiModule } from './modules/dashboardModules/RecomendadorSimi';
+import { AbastecimientoModule } from './modules/dashboardModules/AbastecimientoModule';
 
-export const Dashboard: React.FC = () => {
+interface DashboardProps {
+  onSectionChange?: (section: string) => void;
+}
+
+export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
   const { colores } = brandingConfig;
 
   return (
@@ -36,7 +40,7 @@ export const Dashboard: React.FC = () => {
         >
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <ExpandableModule expandDirection="right">
-              <RecomendadorSimiModule enableVideo={true} />
+              <AbastecimientoModule enableVideo={true} onNavigate={onSectionChange} />
             </ExpandableModule>
             <OfertasCard />
           </div>
@@ -48,7 +52,7 @@ export const Dashboard: React.FC = () => {
 
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <ExpandableModule expandDirection="left">
-              <MedicalIAModule enableVideo={true} />
+              <EpidemologiaModule enableVideo={true} onNavigate={onSectionChange} />
             </ExpandableModule>
             <TopCoursesCard />
           </div>
