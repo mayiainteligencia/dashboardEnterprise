@@ -1,15 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Zap, Gauge, Weight, Star, Eye, Clock, TrendingUp, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Zap, Gauge, Weight, Star, Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { brandingConfig } from '../../../config/branding';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
-interface VideoAnalytics {
-  views: number;
-  watchTime: number;       // segundos acumulados viendo este video
-  completions: number;     // veces que llegó al final
-  engagement: number;      // % promedio visto (0-100)
-}
 
 interface Motocicleta {
   id: number;
@@ -89,28 +82,18 @@ const motocicletas: Motocicleta[] = [
   },
 ];
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
-
-const formatTime = (s: number): string => {
-  if (s < 60) return `${Math.round(s)}s`;
-  const m = Math.floor(s / 60);
-  return `${m}m ${Math.round(s % 60)}s`;
-};
-
 // ─── Video Player ─────────────────────────────────────────────────────────────
 
 interface VideoPlayerProps {
   src: string;
   colorAccent: string;
   colorGlow: string;
-  onTimeUpdate: (currentTime: number, duration: number) => void;
-  onEnded: () => void;
   onPlay: () => void;
   isActive: boolean;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  src, colorAccent, colorGlow, onTimeUpdate, onEnded, onPlay, isActive,
+  src, colorAccent, colorGlow, onPlay, isActive,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -135,19 +118,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, [isActive]);
 
-  const handleTimeUpdate = () => {
-    const v = videoRef.current;
-    if (!v || !v.duration) return;
-    const pct = (v.currentTime / v.duration) * 100;
-    setProgress(pct);
-    onTimeUpdate(v.currentTime, v.duration);
-  };
-
   const handleEnded = () => {
     setIsPlaying(false);
     setProgress(100);
-    onEnded();
-    // loop suave: reinicia después de 0.8s
     setTimeout(() => {
       const v = videoRef.current;
       if (v && isActive) {
@@ -198,7 +171,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         muted={isMuted}
         playsInline
         preload="auto"
-        onTimeUpdate={handleTimeUpdate}
+        onTimeUpdate={() => { const v = videoRef.current; if (v && v.duration) setProgress((v.currentTime / v.duration) * 100); }}
         onEnded={handleEnded}
         onLoadedData={() => setIsLoaded(true)}
         style={{
@@ -320,55 +293,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 };
 
-// ─── Analytics Panel ──────────────────────────────────────────────────────────
-
-interface AnalyticsPanelProps {
-  analytics: VideoAnalytics;
-  colorAccent: string;
-  colores: typeof brandingConfig.colores;
-}
-
-const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ analytics, colorAccent, colores }) => {
-  const stats = [
-    { icon: <Eye size={12} />,       label: 'Visualizaciones', value: analytics.views.toLocaleString() },
-    { icon: <Clock size={12} />,     label: 'Tiempo visto',    value: formatTime(analytics.watchTime) },
-    { icon: <TrendingUp size={12} />, label: 'Engagement',     value: `${Math.round(analytics.engagement)}%` },
-  ];
-
-  return (
-    <div style={{
-      display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px',
-    }}>
-      {stats.map((s, i) => (
-        <div key={i} style={{
-          backgroundColor: colores.fondoTerciario,
-          borderRadius: '10px',
-          padding: '8px 6px',
-          textAlign: 'center',
-          border: `1px solid ${colores.borde}`,
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          {/* Accent line top */}
-          <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
-            background: colorAccent,
-            opacity: 0.6,
-            transition: 'background 0.4s ease',
-          }} />
-          <div style={{ color: colorAccent, marginBottom: '3px', display: 'flex', justifyContent: 'center' }}>
-            {s.icon}
-          </div>
-          <p style={{ fontSize: '12px', fontWeight: '700', color: colores.textoClaro, margin: 0 }}>{s.value}</p>
-          <p style={{ fontSize: '9px', color: colores.textoMedio, margin: '2px 0 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-            {s.label}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export const SelectorMotocicletas: React.FC = () => {
@@ -376,52 +300,7 @@ export const SelectorMotocicletas: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Analytics por moto — se acumulan durante la sesión
-  const [analytics, setAnalytics] = useState<Record<number, VideoAnalytics>>(
-    Object.fromEntries(
-      motocicletas.map(m => [m.id, { views: 0, watchTime: 0, completions: 0, engagement: 0 }])
-    )
-  );
-  const watchStartRef = useRef<number | null>(null);
-
   const moto = motocicletas[currentIndex];
-
-  // ── Analytics handlers ──
-
-  const handlePlay = useCallback(() => {
-    watchStartRef.current = Date.now();
-    setAnalytics(prev => ({
-      ...prev,
-      [moto.id]: { ...prev[moto.id], views: prev[moto.id].views + 1 },
-    }));
-  }, [moto.id]);
-
-  const handleTimeUpdate = useCallback((currentTime: number, duration: number) => {
-    if (!duration) return;
-    const eng = (currentTime / duration) * 100;
-    // acumular tiempo real visto
-    if (watchStartRef.current) {
-      const elapsed = (Date.now() - watchStartRef.current) / 1000;
-      watchStartRef.current = Date.now();
-      setAnalytics(prev => {
-        const cur = prev[moto.id];
-        const newWatch = cur.watchTime + elapsed;
-        const newEng = cur.views > 0 ? Math.max(cur.engagement, eng) : eng;
-        return { ...prev, [moto.id]: { ...cur, watchTime: newWatch, engagement: newEng } };
-      });
-    }
-  }, [moto.id]);
-
-  const handleEnded = useCallback(() => {
-    setAnalytics(prev => ({
-      ...prev,
-      [moto.id]: {
-        ...prev[moto.id],
-        completions: prev[moto.id].completions + 1,
-        engagement: 100,
-      },
-    }));
-  }, [moto.id]);
 
   // ── Navigation ──
 
@@ -535,9 +414,7 @@ export const SelectorMotocicletas: React.FC = () => {
               src={moto.video}
               colorAccent={moto.colorAccent}
               colorGlow={moto.colorGlow}
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleEnded}
-              onPlay={handlePlay}
+              onPlay={() => {}}
               isActive={!isTransitioning}
             />
           ) : (
@@ -628,18 +505,6 @@ export const SelectorMotocicletas: React.FC = () => {
               <p style={{ fontSize: '9px', color: colores.textoMedio, margin: '1px 0 0', textTransform: 'uppercase', letterSpacing: '0.3px' }}>{s.label}</p>
             </div>
           ))}
-        </div>
-
-        {/* ── Analytics ── */}
-        <div>
-          <p style={{ fontSize: '10px', color: colores.textoMedio, margin: '0 0 6px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>
-            Analytics del video
-          </p>
-          <AnalyticsPanel
-            analytics={analytics[moto.id]}
-            colorAccent={moto.colorAccent}
-            colores={colores}
-          />
         </div>
 
       </div>
