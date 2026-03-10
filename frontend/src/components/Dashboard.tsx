@@ -10,7 +10,8 @@ import { TopCoursesCard } from './modules/dashboardModules/Topcoursescard';
 import { ExpandableModule } from './modules/dashboardModules/ExpandableModule';
 import { OfertasCard } from './modules/dashboardModules/Ofertascard';
 import { AlertasEmpresa } from './modules/dashboardModules/Alertaempresa';
-import { RecomendadorSimiModule } from './modules/dashboardModules/RecomendadorSimi';
+//import { RecomendadorSimiModule } from './modules/dashboardModules/RecomendadorSimi';
+import { SelectorMotocicletas } from './modules/dashboardModules/SelectorMotocicletas';
 
 export const Dashboard: React.FC = () => {
   const { colores } = brandingConfig;
@@ -36,9 +37,9 @@ export const Dashboard: React.FC = () => {
             marginBottom: '24px',
           }}
         >
-          {/* Columna 1: Simi Promo (Recomendador) arriba, Ofertas abajo */}
+          {/* Columna 1: Sucursal Inteligente (Susuki) arriba, Ofertas abajo */}
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Recomendador Simi expandible hacia la derecha */}
+            {/* Sucursal inteligente Suzuki expandible hacia la derecha */}
             <ExpandableModule expandDirection="right">
              <SucursalInteligenteModule /> 
             </ExpandableModule>
@@ -57,7 +58,7 @@ export const Dashboard: React.FC = () => {
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {/* MedicalIA expandible hacia la izquierda */}
             <ExpandableModule expandDirection="left">
-              <MedicalIAModule enableVideo={true} />
+              <SelectorMotocicletas />
             </ExpandableModule>
             <TopCoursesCard />
           </div>
