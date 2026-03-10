@@ -24,19 +24,52 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
       <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
         <WelcomeHeader />
 
-        {/* Fila 1a: Abastecimiento | HeroCard | Epidemiología */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', marginBottom: '24px' }}>
-          <div style={{ gridColumn: 'span 4' }}>
+        {/* Fila 1a: Abastecimiento | HeroCard + Video | Epidemiología */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gap: '24px',
+          marginBottom: '24px',
+          alignItems: 'stretch',
+        }}>
+
+          {/* Columna izquierda */}
+          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column' }}>
             <ExpandableModule expandDirection="right">
               <AbastecimientoModule enableVideo={true} onNavigate={onSectionChange} />
             </ExpandableModule>
           </div>
 
-          <div style={{ gridColumn: 'span 4' }}>
+          {/* Columna central: HeroCard + Video que ocupa el espacio restante */}
+          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '0px' }}>
             <HeroCard />
+            {/* Video simiCentro — ocupa todo el espacio restante hasta igualar altura lateral */}
+            <div style={{ flex: 1, borderRadius: '24px', overflow: 'hidden', position: 'relative', minHeight: '160px' }}>
+              <video
+                src="/assets/simiCentro.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                }}
+              />
+              {/* Overlay sutil con gradiente */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%)',
+                pointerEvents: 'none',
+              }} />
+            </div>
           </div>
 
-          <div style={{ gridColumn: 'span 4' }}>
+          {/* Columna derecha */}
+          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column' }}>
             <ExpandableModule expandDirection="left">
               <EpidemologiaModule enableVideo={true} onNavigate={onSectionChange} />
             </ExpandableModule>
@@ -44,7 +77,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
         </div>
 
         {/* Fila 1b: OfertasCard | DashboardEjecutivo | TopCoursesCard */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px', marginBottom: '24px', alignItems: 'stretch' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gap: '24px',
+          marginBottom: '24px',
+          alignItems: 'stretch',
+        }}>
           <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column' }}>
             <OfertasCard />
           </div>
@@ -60,14 +99,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
           </div>
         </div>
 
-        {/* Filas 2+3: grid con Clusters ocupando toda la altura derecha */}
+        {/* Filas 2+3: MapaCalor + ProductivityChart | Clusters (span 2 filas) */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           gridTemplateRows: 'auto auto',
           gap: '24px',
         }}>
-
           {/* MapaCalor — fila 1, columnas 1-8 */}
           <div style={{ gridColumn: 'span 8', gridRow: '1' }}>
             <ExpandableModule expandDirection="right">
@@ -88,7 +126,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
           <div style={{ gridColumn: 'span 8', gridRow: '2' }}>
             <ProductivityChart />
           </div>
-
         </div>
 
         <style>{`
