@@ -20,7 +20,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
   const [precisionIA, setPrecisionIA] = useState(99);
   const [deteccionesHoy, setDeteccionesHoy] = useState(24);
   
-  // Estados para el menú y modales
   const [showMenu, setShowMenu] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -30,25 +29,20 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmedAppointment, setConfirmedAppointment] = useState<{date: string, time: string} | null>(null);
   const [cameraEnabled, setCameraEnabled] = useState(true);
-  
-  // Estado para selección de sucursal
   const [selectedSucursal, setSelectedSucursal] = useState<1 | 2>(1);
   
   const menuRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Cerrar menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setShowMenu(false);
       }
     };
-
     if (showMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -60,7 +54,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
     }
   }, [apiEndpoint]);
 
-  // Recargar video cuando cambia la sucursal
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.load();
@@ -70,7 +63,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
     }
   }, [selectedSucursal]);
 
-  // Funciones del calendario
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -78,7 +70,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
     const startingDayOfWeek = firstDay.getDay();
-    
     return { daysInMonth, startingDayOfWeek };
   };
 
@@ -131,6 +122,19 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
 
   const timeSlots = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'];
 
+  // objectFit: contain → muestra el video completo sin recortar, centrado
+  // fondo negro del contenedor para rellenar los espacios vacíos de forma limpia
+  const videoStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+    objectPosition: 'center center',
+    borderRadius: '12px',
+    filter: cameraEnabled ? 'none' : 'blur(10px) brightness(0.5)',
+    transition: 'filter 0.3s ease',
+    display: 'block',
+  };
+
   return (
     <div
       style={{
@@ -162,7 +166,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
           </div>
           <div>
             <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
-            Sucursal Inteligente
+              Sucursal Inteligente
             </h3>
             <p style={{ fontSize: '12px', color: colores.textoMedio, margin: 0 }}>
               Seguridad Inteligente con IA
@@ -170,7 +174,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
           </div>
         </div>
         
-        {/* Botón de menú con dropdown */}
         <div style={{ position: 'relative' }} ref={menuRef}>
           <button 
             onClick={() => setShowMenu(!showMenu)}
@@ -179,7 +182,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
             <MoreVertical size={20} />
           </button>
           
-          {/* Menú desplegable */}
           {showMenu && (
             <div
               style={{
@@ -197,10 +199,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               }}
             >
               <button
-                onClick={() => {
-                  setShowCalendar(true);
-                  setShowMenu(false);
-                }}
+                onClick={() => { setShowCalendar(true); setShowMenu(false); }}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -219,10 +218,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               </button>
               
               <button
-                onClick={() => {
-                  setShowInfo(true);
-                  setShowMenu(false);
-                }}
+                onClick={() => { setShowInfo(true); setShowMenu(false); }}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -293,60 +289,41 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
         </button>
       </div>
 
-      {/* Área principal - Video */}
+      {/* Área principal - Video centrado y sin recorte */}
       <div 
         style={{
-          flex: 1,
-          backgroundColor: colores.fondoTerciario,
+          backgroundColor: '#000000',     // fondo negro para los laterales vacíos del contain
           borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
-          minHeight: '200px',
+          height: '260px',               // ligeramente más alto para aprovechar mejor el espacio
+          minHeight: '260px',
+          maxHeight: '260px',
           overflow: 'hidden',
         }}
       >
         {enableLiveVideo && videoStreamUrl ? (
-          /* Stream en vivo desde API */
           <video 
             ref={videoRef}
             src={videoStreamUrl}
             autoPlay 
             muted 
             loop
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              borderRadius: '12px',
-              filter: cameraEnabled ? 'none' : 'blur(10px) brightness(0.5)',
-              transition: 'filter 0.3s ease',
-            }}
+            style={videoStyle}
           />
         ) : (
-          /* Video demo estático */
           <video 
             ref={videoRef}
             autoPlay 
             muted 
             loop
             playsInline
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              borderRadius: '12px',
-              filter: cameraEnabled ? 'none' : 'blur(10px) brightness(0.5)',
-              transition: 'filter 0.3s ease',
-            }}
-            onError={(e) => {
-              console.error('Error cargando video:', e);
-            }}
+            style={videoStyle}
+            onError={(e) => { console.error('Error cargando video:', e); }}
           >
             <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/mp4" />
-            <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/quicktime" />
-            <source src={`/assets/sucursalInteligente${selectedSucursal}.mp4`} type="video/webm" />
             Tu navegador no soporta video HTML5.
           </video>
         )}
@@ -370,87 +347,81 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
 
         {/* Overlay con información */}
         {cameraEnabled && (
-          <>
-            <div 
-              style={{
-                position: 'absolute',
-                top: '16px',
-                left: '16px',
-                right: '16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '8px',
-                flexWrap: 'wrap',
-              }}
-            >
-              {/* Badges izquierda */}
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {/* Badge de cámara activa */}
+          <div 
+            style={{
+              position: 'absolute',
+              top: '16px',
+              left: '16px',
+              right: '16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: '8px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div 
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  backdropFilter: 'blur(8px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '12px',
+                  color: '#FFFFFF',
+                  fontWeight: '600',
+                }}
+              >
                 <div 
                   style={{
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    backdropFilter: 'blur(8px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '12px',
-                    color: '#FFFFFF',
-                    fontWeight: '600',
-                  }}
-                >
-                  <div 
-                    style={{
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: '50%',
-                      backgroundColor: '#10B981',
-                      animation: 'pulse 2s ease-in-out infinite',
-                    }}
-                  />
-                  EN VIVO
-                </div>
-
-                {/* Badge de ubicación */}
-                <div 
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    backdropFilter: 'blur(8px)',
-                    fontSize: '12px',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  📍 Sucursal {selectedSucursal}
-                </div>
-              </div>
-
-              {/* Alertas en la derecha */}
-              {alertas > 0 && (
-                <div 
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: '8px',
-                    backgroundColor: 'rgba(239, 68, 68, 0.9)',
-                    backdropFilter: 'blur(8px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '13px',
-                    color: '#FFFFFF',
-                    fontWeight: 'bold',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: '#10B981',
                     animation: 'pulse 2s ease-in-out infinite',
                   }}
-                >
-                  <AlertTriangle size={16} />
-                  {alertas} Alertas
-                </div>
-              )}
+                />
+                EN VIVO
+              </div>
+
+              <div 
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  backdropFilter: 'blur(8px)',
+                  fontSize: '12px',
+                  color: '#FFFFFF',
+                }}
+              >
+                📍 Sucursal {selectedSucursal}
+              </div>
             </div>
-          </>
+
+            {alertas > 0 && (
+              <div 
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                  backdropFilter: 'blur(8px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '13px',
+                  color: '#FFFFFF',
+                  fontWeight: 'bold',
+                  animation: 'pulse 2s ease-in-out infinite',
+                }}
+              >
+                <AlertTriangle size={16} />
+                {alertas} Alertas
+              </div>
+            )}
+          </div>
         )}
 
         {/* Controles de video */}
@@ -521,10 +492,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
         <div
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0,0,0,0.5)',
             display: 'flex',
             alignItems: 'center',
@@ -545,56 +513,28 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header del modal */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
                 Agendar Reunión
               </h3>
-              <button
-                onClick={() => setShowCalendar(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: colores.textoMedio,
-                }}
-              >
+              <button onClick={() => setShowCalendar(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colores.textoMedio }}>
                 <X size={24} />
               </button>
             </div>
 
-            {/* Navegación del mes */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <button
-                onClick={() => changeMonth(-1)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: colores.textoClaro,
-                }}
-              >
+              <button onClick={() => changeMonth(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colores.textoClaro }}>
                 <ChevronLeft size={24} />
               </button>
               <span style={{ fontSize: '18px', fontWeight: '600', color: colores.textoClaro }}>
                 {currentMonth.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' })}
               </span>
-              <button
-                onClick={() => changeMonth(1)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: colores.textoClaro,
-                }}
-              >
+              <button onClick={() => changeMonth(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colores.textoClaro }}>
                 <ChevronRight size={24} />
               </button>
             </div>
 
-            {/* Calendario */}
             <div style={{ marginBottom: '20px' }}>
-              {/* Días de la semana */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginBottom: '8px' }}>
                 {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map(day => (
                   <div key={day} style={{ textAlign: 'center', fontSize: '12px', fontWeight: '600', color: colores.textoMedio }}>
@@ -603,25 +543,19 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 ))}
               </div>
 
-              {/* Días del mes */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
                 {(() => {
                   const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
                   const days = [];
-                  
-                  // Espacios vacíos antes del primer día
                   for (let i = 0; i < startingDayOfWeek; i++) {
                     days.push(<div key={`empty-${i}`} />);
                   }
-                  
-                  // Días del mes
                   for (let day = 1; day <= daysInMonth; day++) {
                     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
                     const isDisabled = isDateDisabled(date);
                     const isSelected = selectedDate?.getDate() === day && 
                                       selectedDate?.getMonth() === currentMonth.getMonth() &&
                                       selectedDate?.getFullYear() === currentMonth.getFullYear();
-                    
                     days.push(
                       <button
                         key={day}
@@ -642,13 +576,11 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                       </button>
                     );
                   }
-                  
                   return days;
                 })()}
               </div>
             </div>
 
-            {/* Selección de hora */}
             {selectedDate && (
               <div style={{ marginBottom: '20px' }}>
                 <p style={{ fontSize: '14px', fontWeight: '600', color: colores.textoClaro, marginBottom: '12px' }}>
@@ -676,7 +608,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               </div>
             )}
 
-            {/* Botón confirmar */}
             <button
               onClick={handleScheduleConfirm}
               disabled={!selectedDate || !selectedTime}
@@ -704,10 +635,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
         <div
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0,0,0,0.5)',
             display: 'flex',
             alignItems: 'center',
@@ -730,15 +658,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
                 Acerca de Sucursal Inteligente
               </h3>
-              <button
-                onClick={() => setShowInfo(false)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: colores.textoMedio,
-                }}
-              >
+              <button onClick={() => setShowInfo(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colores.textoMedio }}>
                 <X size={24} />
               </button>
             </div>
@@ -811,10 +731,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
         <div
           style={{
             position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0,0,0,0.5)',
             display: 'flex',
             alignItems: 'center',
@@ -836,7 +753,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Icono de confirmación */}
             <div style={{
               width: '80px',
               height: '80px',
@@ -861,7 +777,6 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
               Tu reunión para cotización ha sido confirmada exitosamente
             </p>
 
-            {/* Detalles de la cita */}
             <div style={{
               backgroundColor: colores.fondoTerciario,
               borderRadius: '12px',
@@ -878,11 +793,7 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
                 </p>
               </div>
               
-              <div style={{
-                height: '1px',
-                backgroundColor: colores.borde,
-                margin: '12px 0',
-              }} />
+              <div style={{ height: '1px', backgroundColor: colores.borde, margin: '12px 0' }} />
 
               <div>
                 <p style={{ fontSize: '11px', color: colores.textoMedio, margin: '0 0 4px 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -926,21 +837,13 @@ export const SucursalInteligenteModule: React.FC<SucursalInteligenteModuleProps>
           0%, 100% { opacity: 1; }
           50% { opacity: 0.7; }
         }
-        
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        
         @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>
