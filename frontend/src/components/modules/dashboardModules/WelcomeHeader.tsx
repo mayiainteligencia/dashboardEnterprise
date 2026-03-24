@@ -30,7 +30,7 @@ export const WelcomeHeader: React.FC = () => {
           letterSpacing: '-0.5px',
         }}
       >
-        ¿Qué deseas resolver, Hoy?
+        ¿Qué deseas resolver hoy?
       </p>
     </div>
   );
