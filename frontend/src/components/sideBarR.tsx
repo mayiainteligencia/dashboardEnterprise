@@ -19,7 +19,8 @@ interface SidebarRProps {
 interface Section {
   id: string;
   nombre: string;
-  icono: React.ComponentType<{ size?: number }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icono: React.ComponentType<any>;
 }
 
 const { colores } = brandingConfig;
@@ -108,7 +109,7 @@ export const SidebarR: React.FC<SidebarRProps> = ({ onClose }) => {
                   transform: isHovered ? 'scale(1.05)' : 'scale(1)',
                 }}
               >
-                <Icon size={24} color={colores.fondoPrincipal} />
+                <Icon size={24} style={{ color: colores.fondoPrincipal }} />
               </button>
 
               {/* Tooltip al hacer hover */}
@@ -213,7 +214,7 @@ export const SidebarR: React.FC<SidebarRProps> = ({ onClose }) => {
                           justifyContent: 'center',
                         }}
                       >
-                        <Icon size={20} color={colores.fondoPrincipal} />
+                       <Icon size={20} style={{ color: colores.fondoPrincipal }} />
                       </div>
                       <span style={{ 
                         fontSize: '18px', 
