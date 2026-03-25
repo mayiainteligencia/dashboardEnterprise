@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, LayoutDashboard, TrendingUp, Shield, Code2, GraduationCap, ChevronRight } from 'lucide-react';
+import {
+  Menu, X, LayoutDashboard, TrendingUp, Shield,
+  Code2, GraduationCap, ChevronRight,
+} from 'lucide-react';
 import { brandingConfig } from '../config/branding';
 
-/**
- * ResponsiveLayout — wrapper que hace toda la app responsive.
- * NO modifica Sidebar, Header, Dashboard, ni Analiticos.
- * Los envuelve y añade:
- *   - Menú hamburguesa en móvil/tablet
- *   - Sidebar como drawer lateral
- *   - Dashboard y Analíticos se muestran en scroll vertical en móvil
- */
-
 interface ResponsiveLayoutProps {
-  /** Sección activa que controla qué contenido se muestra */
   activeSection: string;
   onSectionChange: (section: string) => void;
-  /** Slot para el Header original */
   header: React.ReactNode;
-  /** Slot para el Sidebar original (solo se muestra en desktop) */
   sidebar: React.ReactNode;
-  /** Slot para el SidebarR original (solo se muestra en desktop) */
   sidebarR?: React.ReactNode;
-  /** Slot para el contenido principal */
   children: React.ReactNode;
 }
 
@@ -52,13 +41,11 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // Cierra el drawer al cambiar sección
   const handleSectionChange = (section: string) => {
     onSectionChange(section);
     setDrawerOpen(false);
   };
 
-  // Bloquea el scroll del body cuando el drawer está abierto
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -66,63 +53,172 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
 
   const activeItem = menuItems.find(m => m.id === activeSection);
 
-  /* ─────────────────────────── DESKTOP (≥1024px) ─────────────────────────── */
+  /* ─── DESKTOP ≥1024px ─── */
   if (!isMobile) {
     return (
-      <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: colores.fondoPrincipal }}>
-        {/* Sidebar izquierdo original */}
+      <div style={{
+        display: 'flex',
+        height: '100vh',
+        overflow: 'hidden',
+        background: colores.fondoPrincipal,
+      }}>
         {sidebar}
-
-        {/* Zona central: header + contenido */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {header}
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {children}
           </div>
         </div>
-
-        {/* Sidebar derecho original */}
         {sidebarR}
       </div>
     );
   }
 
-  /* ─────────────────────────── MOBILE / TABLET (<1024px) ─────────────────── */
+  /* ─── MOBILE / TABLET <1024px ─── */
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: colores.fondoPrincipal }}>
+    <>
+      {/*
+        En móvil usamos el flujo normal del documento (no flex column con height fija).
+        El body/html hacen el scroll natural. Solo la top bar y el bottom nav son sticky.
+      */}
+      <style>{`
+        html, body { height: auto; overflow: auto; }
 
-      {/* ── Top bar móvil ── */}
-      <div style={{
-        height: '60px',
-        backgroundColor: colores.fondoSecundario,
-        borderBottom: `1px solid ${colores.borde}`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 16px',
-        position: 'sticky',
-        top: 0,
-        zIndex: 500,
-        flexShrink: 0,
-      }}>
-        {/* Hamburger */}
-        <button
-          onClick={() => setDrawerOpen(true)}
-          style={{
-            width: '40px', height: '40px', borderRadius: '10px',
-            background: colores.fondoTerciario, border: `1px solid ${colores.borde}`,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
+        /* Top bar fija */
+        .rl-topbar {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          height: 56px;
+          background: ${colores.fondoSecundario};
+          border-bottom: 1px solid ${colores.borde};
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 14px;
+          z-index: 500;
+        }
+
+        /* Espacio para la topbar */
+        .rl-topbar-spacer { height: 56px; }
+
+        /* Bottom nav fija */
+        .rl-bottomnav {
+          position: fixed;
+          bottom: 0; left: 0; right: 0;
+          background: ${colores.fondoSecundario};
+          border-top: 1px solid ${colores.borde};
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          padding: 6px 4px;
+          z-index: 500;
+          padding-bottom: calc(6px + env(safe-area-inset-bottom));
+        }
+
+        /* Espacio para el bottom nav */
+        .rl-bottomnav-spacer { height: calc(64px + env(safe-area-inset-bottom)); }
+
+        /* Contenido: scroll horizontal si el contenido es más ancho */
+        .rl-content {
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Escala el contenido del dashboard para que entre en pantalla */
+        .rl-content-inner {
+          min-width: 0;
+          width: 100%;
+        }
+
+        /* Drawer overlay */
+        .rl-overlay {
+          position: fixed; inset: 0;
+          background: rgba(0,0,0,0.55);
+          backdrop-filter: blur(3px);
+          z-index: 900;
+          animation: rl-fadein 0.2s ease;
+        }
+
+        /* Drawer panel */
+        .rl-drawer {
+          position: fixed;
+          left: 0; top: 0; bottom: 0;
+          width: 280px;
+          background: ${colores.fondoSecundario};
+          border-right: 1px solid ${colores.borde};
+          display: flex;
+          flex-direction: column;
+          z-index: 1000;
+          animation: rl-slidein 0.25s ease;
+          box-shadow: 8px 0 40px rgba(0,0,0,0.4);
+        }
+
+        @keyframes rl-fadein {
+          from { opacity: 0; } to { opacity: 1; }
+        }
+        @keyframes rl-slidein {
+          from { transform: translateX(-100%); } to { transform: translateX(0); }
+        }
+
+        /* Botón hamburguesa */
+        .rl-hambtn {
+          width: 40px; height: 40px; border-radius: 10px;
+          background: ${colores.fondoTerciario};
+          border: 1px solid ${colores.borde};
+          cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Pill sección activa */
+        .rl-pill {
+          display: flex; align-items: center; gap: 6px;
+          padding: 6px 12px; border-radius: 999px;
+          background: ${colores.primario}20;
+          border: 1px solid ${colores.primario}40;
+          font-size: 12px; font-weight: 700;
+          color: ${colores.primario};
+          white-space: nowrap;
+        }
+
+        /* Bottom nav item */
+        .rl-navitem {
+          display: flex; flex-direction: column; align-items: center; gap: 3px;
+          background: none; border: none; cursor: pointer;
+          padding: 5px 8px; border-radius: 12px;
+          min-width: 52px;
+          transition: all 0.2s;
+        }
+        .rl-navitem span {
+          font-size: 9px;
+          text-align: center;
+          max-width: 52px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          line-height: 1;
+        }
+
+        /* Drawer nav item */
+        .rl-draweritem {
+          width: 100%; display: flex; align-items: center; gap: 12px;
+          padding: 12px 14px; border-radius: 12px; margin-bottom: 4px;
+          border: none; cursor: pointer; text-align: left;
+          transition: all 0.2s;
+        }
+      `}</style>
+
+      {/* ── Top bar ── */}
+      <div className="rl-topbar">
+        <button className="rl-hambtn" onClick={() => setDrawerOpen(true)}>
           <Menu size={20} color={colores.textoClaro} />
         </button>
 
-        {/* Logo / nombre empresa */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <img
             src="/assets/logosEmpresas/guanajuato.png"
             alt={empresa.nombre}
-            style={{ height: '32px', objectFit: 'contain' }}
+            style={{ height: '28px', objectFit: 'contain' }}
             onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
           <span style={{ fontSize: '15px', fontWeight: '700', color: colores.textoClaro }}>
@@ -130,120 +226,62 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           </span>
         </div>
 
-        {/* Sección activa pill */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '6px',
-          padding: '6px 12px', borderRadius: '999px',
-          background: `${colores.primario}20`, border: `1px solid ${colores.primario}40`,
-        }}>
-          {activeItem && <activeItem.icono size={13} color={colores.primario} />}
-          <span style={{ fontSize: '12px', fontWeight: '700', color: colores.primario }}>
-            {activeItem?.nombre ?? 'Dashboard'}
-          </span>
+        <div className="rl-pill">
+          {activeItem && <activeItem.icono size={12} color={colores.primario} />}
+          <span>{activeItem?.nombre ?? 'Dashboard'}</span>
         </div>
       </div>
 
-      {/* ── Header original (versión compacta debajo del top bar) ── */}
-      <div style={{
-        overflow: 'hidden',
-        maxHeight: '72px',  // misma altura que el header original
-      }}>
-        {/* Ocultamos el header en móvil para no duplicar logo/nav
-            Si quieres mostrarlo descomenta la línea de abajo */}
-        {/* {header} */}
-      </div>
+      {/* Spacer para la top bar */}
+      <div className="rl-topbar-spacer" />
 
-      {/* ── Contenido principal scrolleable ── */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
-        {/* Envuelve el contenido en un scaler para pantallas pequeñas */}
-        <div style={{
-          minWidth: 0,
-          width: '100%',
-          // En móvil el contenido puede tener columnas muy anchas,
-          // permitimos scroll horizontal interno por sección
-        }}>
+      {/* ── Contenido principal — scroll libre ── */}
+      <div className="rl-content">
+        <div className="rl-content-inner">
           {children}
         </div>
       </div>
 
-      {/* ── Bottom nav bar (acceso rápido) ── */}
-      <nav style={{
-        position: 'sticky',
-        bottom: 0,
-        backgroundColor: colores.fondoSecundario,
-        borderTop: `1px solid ${colores.borde}`,
-        display: 'flex',
-        justifyContent: 'space-around',
-        padding: '8px 4px',
-        zIndex: 400,
-        flexShrink: 0,
-      }}>
-        {menuItems.slice(0, 5).map(item => {
+      {/* Spacer para el bottom nav */}
+      <div className="rl-bottomnav-spacer" />
+
+      {/* ── Bottom nav ── */}
+      <div className="rl-bottomnav">
+        {menuItems.map(item => {
           const Icon = item.icono;
           const isActive = activeSection === item.id;
           return (
             <button
               key={item.id}
+              className="rl-navitem"
               onClick={() => handleSectionChange(item.id)}
-              style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
-                background: 'none', border: 'none', cursor: 'pointer',
-                padding: '6px 10px', borderRadius: '12px',
-                backgroundColor: isActive ? `${colores.primario}20` : 'transparent',
-                transition: 'all 0.2s',
-                minWidth: '52px',
-              }}
+              style={{ backgroundColor: isActive ? `${colores.primario}20` : 'transparent' }}
             >
               <div style={{
-                width: '32px', height: '32px', borderRadius: '10px', display: 'flex',
-                alignItems: 'center', justifyContent: 'center',
+                width: '32px', height: '32px', borderRadius: '10px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 backgroundColor: isActive ? colores.primario : colores.fondoTerciario,
                 transition: 'all 0.2s',
               }}>
                 <Icon size={16} color={isActive ? '#fff' : colores.textoMedio} />
               </div>
               <span style={{
-                fontSize: '9px', fontWeight: isActive ? '700' : '500',
+                fontWeight: isActive ? 700 : 500,
                 color: isActive ? colores.primario : colores.textoOscuro,
-                lineHeight: 1,
-                textAlign: 'center',
-                maxWidth: '52px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
               }}>
                 {item.nombre}
               </span>
             </button>
           );
         })}
-      </nav>
+      </div>
 
-      {/* ── Drawer lateral (hamburger menu) ── */}
+      {/* ── Drawer ── */}
       {drawerOpen && (
         <>
-          {/* Overlay */}
-          <div
-            onClick={() => setDrawerOpen(false)}
-            style={{
-              position: 'fixed', inset: 0, zIndex: 900,
-              backgroundColor: 'rgba(0,0,0,0.55)',
-              backdropFilter: 'blur(3px)',
-              animation: 'fadeIn 0.2s ease',
-            }}
-          />
-
-          {/* Panel */}
-          <div style={{
-            position: 'fixed', left: 0, top: 0, bottom: 0,
-            width: '280px', zIndex: 1000,
-            backgroundColor: colores.fondoSecundario,
-            borderRight: `1px solid ${colores.borde}`,
-            display: 'flex', flexDirection: 'column',
-            animation: 'slideInLeft 0.25s ease',
-            boxShadow: '8px 0 40px rgba(0,0,0,0.4)',
-          }}>
-            {/* Header del drawer */}
+          <div className="rl-overlay" onClick={() => setDrawerOpen(false)} />
+          <div className="rl-drawer">
+            {/* Header drawer */}
             <div style={{
               padding: '20px 20px 16px',
               borderBottom: `1px solid ${colores.borde}`,
@@ -251,10 +289,9 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
-                  width: '40px', height: '40px', borderRadius: '10px',
+                  width: '40px', height: '40px', borderRadius: '10px', overflow: 'hidden',
                   background: `linear-gradient(135deg, ${colores.primario}, ${colores.secundario})`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  overflow: 'hidden',
                 }}>
                   <img
                     src="/assets/logosEmpresas/guanajuato.png"
@@ -300,14 +337,11 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                 return (
                   <button
                     key={item.id}
+                    className="rl-draweritem"
                     onClick={() => handleSectionChange(item.id)}
                     style={{
-                      width: '100%', display: 'flex', alignItems: 'center',
-                      gap: '12px', padding: '12px 14px', borderRadius: '12px',
-                      marginBottom: '4px', border: 'none', cursor: 'pointer',
                       backgroundColor: isActive ? colores.primario : 'transparent',
                       color: isActive ? '#fff' : colores.textoMedio,
-                      transition: 'all 0.2s', textAlign: 'left',
                     }}
                   >
                     <div style={{
@@ -317,7 +351,7 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
                     }}>
                       <Icon size={18} color={isActive ? '#fff' : colores.textoMedio} />
                     </div>
-                    <span style={{ fontSize: '14px', fontWeight: isActive ? '700' : '500', flex: 1 }}>
+                    <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, flex: 1 }}>
                       {item.nombre}
                     </span>
                     {isActive && <ChevronRight size={16} color="rgba(255,255,255,0.7)" />}
@@ -326,7 +360,7 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
               })}
             </nav>
 
-            {/* Footer del drawer */}
+            {/* Footer */}
             <div style={{
               padding: '16px 20px',
               borderTop: `1px solid ${colores.borde}`,
@@ -337,17 +371,6 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
           </div>
         </>
       )}
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        @keyframes slideInLeft {
-          from { transform: translateX(-100%); }
-          to   { transform: translateX(0); }
-        }
-      `}</style>
-    </div>
+    </>
   );
 };
