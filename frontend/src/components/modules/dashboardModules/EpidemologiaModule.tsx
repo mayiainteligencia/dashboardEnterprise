@@ -80,7 +80,7 @@ export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({
             <Activity size={22} color="white" />
           </div>
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: colores.textoClaro, margin: 0, lineHeight: 1.2 }}>SIMI Inteligencia Epidemiológica</h3>
+            <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: colores.textoClaro, margin: 0, lineHeight: 1.2 }}>Guanajuato Inteligencia Epidemiológica</h3>
             <p style={{ fontSize: '11px', color: colores.textoMedio, margin: 0 }}>
               Vigilancia en tiempo real · <span style={{ color: '#EC4899', fontWeight: 600 }}>● 3 Alertas activas</span>
             </p>
@@ -129,7 +129,7 @@ export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
             <div>
               <p style={{ fontSize: '11px', fontWeight: '600', color: colores.textoClaro, margin: 0 }}>Casos · 12 semanas</p>
-              <p style={{ fontSize: '9px', color: colores.textoMedio, margin: '2px 0 0 0' }}>Todas las enfermedades · Red Similares</p>
+              <p style={{ fontSize: '9px', color: colores.textoMedio, margin: '2px 0 0 0' }}>Todas las enfermedades · Red </p>
             </div>
             <span style={{ fontSize: '10px', color: '#EF4444', fontWeight: '700', backgroundColor: '#EF444420', padding: '2px 7px', borderRadius: '20px' }}>↑ +20%</span>
           </div>
@@ -145,7 +145,7 @@ export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({
         <div style={{ position: 'relative', borderRadius: '14px', overflow: 'hidden', backgroundColor: '#000', flexShrink: 0 }}>
           {enableVideo ? (
             <video
-              src={videoStreamUrl || '/assets/simiEpidemiologo.mp4'}
+              src={videoStreamUrl || '/assets/guanajuato2.mp4'}
               autoPlay muted loop playsInline
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             />
@@ -222,7 +222,7 @@ export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }} onClick={() => setShowInfo(false)}>
           <div style={{ backgroundColor: colores.fondoSecundario, borderRadius: '20px', padding: '24px', maxWidth: '400px', width: '90%' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>Acerca de SIMI Epidemiología</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>Acerca de Guanajuato Epidemiología</h3>
               <button onClick={() => setShowInfo(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: colores.textoMedio }}><X size={24} /></button>
             </div>
             <div style={{ padding: '16px', backgroundColor: colores.fondoTerciario, borderRadius: '12px', marginBottom: '16px' }}>
@@ -230,7 +230,7 @@ export const EpidemologiaModule: React.FC<EpidemologiaModuleProps> = ({
                 <Activity size={28} color="white" />
               </div>
               <p style={{ fontSize: '14px', color: colores.textoClaro, lineHeight: '1.6', marginBottom: '12px' }}>
-                <strong>SIMI Inteligencia Epidemiológica</strong> monitorea brotes y alertas sanitarias en tiempo real para toda la red Similares.
+                <strong>Guanajuato Inteligencia Epidemiológica</strong> monitorea brotes y alertas sanitarias en tiempo real para toda la red.
               </p>
               <div style={{ borderTop: `1px solid ${colores.borde}`, paddingTop: '12px' }}>
                 {['Detección temprana de brotes por región', 'Correlación consumo de medicamentos y enfermedad', 'Alertas sanitarias automáticas', 'Mapa de calor epidemiológico nacional'].map(item => (

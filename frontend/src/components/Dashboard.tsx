@@ -46,7 +46,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
             {/* Video simiCentro — ocupa todo el espacio restante hasta igualar altura lateral */}
             <div style={{ flex: 1, borderRadius: '24px', overflow: 'hidden', position: 'relative', minHeight: '160px' }}>
               <video
-                src="/assets/simiCentro.mp4"
+                src="/assets/doctorCentro.mp4"
                 autoPlay
                 muted
                 loop

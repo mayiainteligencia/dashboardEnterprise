@@ -1,8 +1,8 @@
 export const brandingConfig = {
   empresa: {
-    nombre: "Farmacias Similares",
-    eslogan: "Mabe Es muy Bueno",
-    logo: "/assets/logosEmpresas/SimilaresLogo.png",
+    nombre: "Guanajuato",
+    eslogan: "Gobierno de la Gente",
+    logo: "/assets/logosEmpresas/guanajuato.png",
   },
   
   colores: {
