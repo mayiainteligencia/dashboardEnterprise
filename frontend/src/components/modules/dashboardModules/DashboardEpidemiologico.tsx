@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertTriangle, TrendingUp, TrendingDown, MapPin, Activity,
   ArrowUpRight, ChevronRight, Thermometer, Wind, Droplets,
@@ -110,11 +110,11 @@ const TooltipHistorico = ({ active, payload, label }: any) => {
   );
 };
 
-const HeatMapGrid: React.FC<{ estados: EstadoData[]; seleccionado: string | null; onSelect: (a: string) => void; mostrarHistorico: boolean }> = ({ estados, seleccionado, onSelect, mostrarHistorico }) => {
+const HeatMapGrid: React.FC<{ estados: EstadoData[]; seleccionado: string | null; onSelect: (a: string) => void; mostrarHistorico: boolean; isMobile: boolean }> = ({ estados, seleccionado, onSelect, mostrarHistorico, isMobile }) => {
   const { colores } = brandingConfig;
   const maxCasos = Math.max(...estados.map(e => e.casos));
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '8px' }}>
       {estados.map(e => {
         const intensidad = e.casos / maxCasos;
         const cfg = nivelConfig[e.nivel];
@@ -124,13 +124,11 @@ const HeatMapGrid: React.FC<{ estados: EstadoData[]; seleccionado: string | null
           <div
             key={e.abrev}
             onClick={() => onSelect(isSelected ? '' : e.abrev)}
-            style={{ borderRadius: '14px', padding: '12px', background: isSelected ? cfg.color : cfg.bg, border: `2px solid ${isSelected ? cfg.color : cfg.color + '40'}`, cursor: 'pointer', transition: 'all 0.25s ease', transform: isSelected ? 'scale(1.04)' : 'scale(1)', boxShadow: isSelected ? `0 6px 20px ${cfg.color}40` : 'none', position: 'relative', overflow: 'hidden' }}
-            onMouseEnter={el => { if (!isSelected) el.currentTarget.style.transform = 'scale(1.02)'; }}
-            onMouseLeave={el => { if (!isSelected) el.currentTarget.style.transform = 'scale(1)'; }}
+            style={{ borderRadius: '14px', padding: isMobile ? '10px' : '12px', background: isSelected ? cfg.color : cfg.bg, border: `2px solid ${isSelected ? cfg.color : cfg.color + '40'}`, cursor: 'pointer', transition: 'all 0.25s ease', transform: isSelected ? 'scale(1.04)' : 'scale(1)', boxShadow: isSelected ? `0 6px 20px ${cfg.color}40` : 'none', position: 'relative', overflow: 'hidden' }}
           >
             <div style={{ position: 'absolute', bottom: 0, left: 0, height: `${intensidad * 100}%`, width: '4px', background: cfg.color, borderRadius: '0 4px 4px 0', opacity: 0.7 }} />
             <div style={{ fontSize: '11px', fontWeight: '800', color: isSelected ? '#fff' : cfg.color }}>{e.abrev}</div>
-            <div style={{ fontSize: '16px', fontWeight: '800', color: isSelected ? '#fff' : colores.textoClaro, marginTop: '4px' }}>{e.casos.toLocaleString()}</div>
+            <div style={{ fontSize: isMobile ? '14px' : '16px', fontWeight: '800', color: isSelected ? '#fff' : colores.textoClaro, marginTop: '4px' }}>{e.casos.toLocaleString()}</div>
             <div style={{ fontSize: '10px', color: isSelected ? 'rgba(255,255,255,0.8)' : colores.textoMedio }}>casos</div>
             {mostrarHistorico && (
               <div style={{ fontSize: '10px', fontWeight: '700', color: isSelected ? 'rgba(255,255,255,0.9)' : difHistorico > 0 ? '#EF4444' : '#10B981', marginTop: '3px' }}>
@@ -154,6 +152,14 @@ export const DashboardEpidemiologico: React.FC = () => {
   const [periodo, setPeriodo] = useState<Periodo>('7d');
   const [mostrarHistorico, setMostrarHistorico] = useState(false);
   const [vistaGrafica, setVistaGrafica] = useState<'barras' | 'lineas'>('barras');
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const estadosActuales = estadosPorPeriodo[periodo];
   const enfermedadesActuales = enfermedadesPorPeriodo[periodo];
@@ -162,31 +168,35 @@ export const DashboardEpidemiologico: React.FC = () => {
   const totalHistorico = estadosActuales.reduce((s, e) => s + e.casosHistorico, 0);
   const estadosCriticos = estadosActuales.filter(e => e.nivel === 'critico').length;
   const difGlobal = Math.round(((totalCasos - totalHistorico) / totalHistorico) * 100);
-  const periodos: { id: Periodo; label: string }[] = [{ id: '7d', label: '7 días' }, { id: '30d', label: '30 días' }, { id: '90d', label: '90 días' }];
+  const periodos: { id: Periodo; label: string }[] = [{ id: '7d', label: '7d' }, { id: '30d', label: '30d' }, { id: '90d', label: '90d' }];
   const datosComparativa = enfermedadesActuales.map(e => ({ nombre: e.nombre.slice(0, 8), actual: e.casos, historico: e.casosHistorico }));
 
   return (
-    <div style={{ background: colores.fondoSecundario, borderRadius: '24px', padding: '28px', border: `1px solid ${colores.borde}`, boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div style={{ background: colores.fondoSecundario, borderRadius: '24px', padding: isMobile ? '16px' : '28px', border: `1px solid ${colores.borde}`, boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: isMobile ? '14px' : '20px' }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      {/* Header — stack en móvil */}
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'flex-start', gap: '10px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#EF4444', boxShadow: '0 0 8px #EF4444', animation: 'pulseEpi2 2s infinite' }} />
-            <h3 style={{ fontSize: '18px', fontWeight: '800', color: colores.textoClaro, margin: 0, letterSpacing: '-0.3px' }}>Vigilancia Epidemiológica</h3>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#EF4444', boxShadow: '0 0 8px #EF4444', animation: 'pulseEpi2 2s infinite', flexShrink: 0 }} />
+            <h3 style={{ fontSize: isMobile ? '16px' : '18px', fontWeight: '800', color: colores.textoClaro, margin: 0, letterSpacing: '-0.3px' }}>Vigilancia Epidemiológica</h3>
           </div>
           <p style={{ fontSize: '12px', color: colores.textoMedio, margin: '4px 0 0 20px' }}>Concentración de casos por estado · Datos en tiempo real</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+
+        {/* Controles — en móvil van en fila compacta */}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
           <button
             onClick={() => setMostrarHistorico(p => !p)}
-            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', borderRadius: '10px', border: 'none', fontSize: '11px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', background: mostrarHistorico ? '#008CAE20' : colores.fondoTerciario, color: mostrarHistorico ? '#008CAE' : colores.textoMedio }}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 10px', borderRadius: '10px', border: 'none', fontSize: '11px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', background: mostrarHistorico ? '#008CAE20' : colores.fondoTerciario, color: mostrarHistorico ? '#008CAE' : colores.textoMedio, whiteSpace: 'nowrap' }}
           >
-            <History size={13} /> vs Histórico
+            <History size={13} /> vs Hist.
           </button>
+          {/* Selector de período — compacto en móvil */}
           <div style={{ display: 'flex', background: colores.fondoTerciario, borderRadius: '10px', padding: '3px', border: `1px solid ${colores.borde}` }}>
             {periodos.map(p => (
-              <button key={p.id} onClick={() => setPeriodo(p.id)} style={{ padding: '5px 12px', borderRadius: '7px', border: 'none', fontSize: '11px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', background: periodo === p.id ? colores.primario : 'transparent', color: periodo === p.id ? '#fff' : colores.textoMedio }}>
+              <button key={p.id} onClick={() => setPeriodo(p.id)}
+                style={{ padding: isMobile ? '5px 10px' : '5px 12px', borderRadius: '7px', border: 'none', fontSize: '11px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', background: periodo === p.id ? colores.primario : 'transparent', color: periodo === p.id ? '#fff' : colores.textoMedio, whiteSpace: 'nowrap' }}>
                 {p.label}
               </button>
             ))}
@@ -195,23 +205,25 @@ export const DashboardEpidemiologico: React.FC = () => {
       </div>
 
       {/* Resumen */}
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         {[
-          { val: totalCasos.toLocaleString(),                                            label: 'casos totales',       color: '#EF4444' },
-          { val: estadosCriticos.toString(),                                             label: 'estados críticos',    color: '#F59E0B' },
-          { val: `${difGlobal > 0 ? '+' : ''}${difGlobal}%`,                            label: 'vs período anterior', color: difGlobal > 0 ? '#EF4444' : '#10B981' },
+          { val: totalCasos.toLocaleString(), label: 'casos totales',       color: '#EF4444' },
+          { val: estadosCriticos.toString(),  label: 'estados críticos',    color: '#F59E0B' },
+          { val: `${difGlobal > 0 ? '+' : ''}${difGlobal}%`, label: 'vs período anterior', color: difGlobal > 0 ? '#EF4444' : '#10B981' },
         ].map((k, i) => (
-          <div key={i} style={{ padding: '8px 16px', borderRadius: '14px', background: `${k.color}15`, border: `1px solid ${k.color}30`, textAlign: 'center' }}>
+          <div key={i} style={{ padding: '8px 14px', borderRadius: '14px', background: `${k.color}15`, border: `1px solid ${k.color}30`, textAlign: 'center', flex: '1 1 80px' }}>
             <div style={{ fontSize: '16px', fontWeight: '800', color: k.color }}>{k.val}</div>
-            <div style={{ fontSize: '10px', color: colores.textoMedio }}>{k.label}</div>
+            <div style={{ fontSize: '10px', color: colores.textoMedio, whiteSpace: 'nowrap' }}>{k.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', gap: '20px' }}>
+      {/* Layout principal: columnas en desktop, stack en móvil */}
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 260px', gap: isMobile ? '14px' : '20px' }}>
+
+        {/* Columna izquierda: leyenda + heatmap + detalle */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '11px', color: colores.textoMedio, fontWeight: '600' }}>Nivel:</span>
             {Object.entries(nivelConfig).map(([k, v]) => (
               <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -219,14 +231,14 @@ export const DashboardEpidemiologico: React.FC = () => {
                 <span style={{ fontSize: '11px', color: colores.textoMedio }}>{v.label}</span>
               </div>
             ))}
-            {mostrarHistorico && <span style={{ fontSize: '11px', color: colores.primario, fontWeight: '700', marginLeft: '8px' }}>· Comparando vs histórico</span>}
+            {mostrarHistorico && <span style={{ fontSize: '11px', color: colores.primario, fontWeight: '700' }}>· vs histórico</span>}
           </div>
 
-          <HeatMapGrid estados={estadosActuales} seleccionado={estadoSeleccionado} onSelect={setEstadoSeleccionado} mostrarHistorico={mostrarHistorico} />
+          <HeatMapGrid estados={estadosActuales} seleccionado={estadoSeleccionado} onSelect={setEstadoSeleccionado} mostrarHistorico={mostrarHistorico} isMobile={isMobile} />
 
           {detalleEstado && (
             <div style={{ background: colores.fondoTerciario, borderRadius: '16px', padding: '16px', border: `1px solid ${nivelConfig[detalleEstado.nivel].color}40`, animation: 'fadeInEpi2 0.3s ease' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <MapPin size={16} color={nivelConfig[detalleEstado.nivel].color} />
                   <span style={{ fontSize: '15px', fontWeight: '800', color: colores.textoClaro }}>{detalleEstado.nombre}</span>
@@ -241,7 +253,7 @@ export const DashboardEpidemiologico: React.FC = () => {
           )}
         </div>
 
-        {/* Sidebar */}
+        {/* Columna derecha: Top padecimientos */}
         <div style={{ background: colores.fondoTerciario, borderRadius: '18px', padding: '18px', border: `1px solid ${colores.borde}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '13px', fontWeight: '800', color: colores.textoClaro }}>Top Padecimientos</span>
@@ -260,7 +272,7 @@ export const DashboardEpidemiologico: React.FC = () => {
                       <div style={{ fontSize: '10px', color: colores.textoMedio }}>{enf.casos.toLocaleString()} casos</div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '11px', fontWeight: '700', color: enf.cambio > 0 ? '#EF4444' : '#10B981' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '11px', fontWeight: '700', color: enf.cambio > 0 ? '#EF4444' : '#10B981', flexShrink: 0 }}>
                     {enf.cambio > 0 ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
                     {enf.cambio > 0 ? '+' : ''}{enf.cambio}%
                   </div>
@@ -283,10 +295,10 @@ export const DashboardEpidemiologico: React.FC = () => {
 
       {/* Gráfica comparativa */}
       <div style={{ background: colores.fondoTerciario, borderRadius: '18px', padding: '18px', border: `1px solid ${colores.borde}` }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Calendar size={16} color={colores.primario} />
-            <span style={{ fontSize: '13px', fontWeight: '800', color: colores.textoClaro }}>Comparación vs Promedio Histórico · Respiratoria</span>
+            <span style={{ fontSize: isMobile ? '11px' : '13px', fontWeight: '800', color: colores.textoClaro }}>Comparación vs Promedio Histórico · Respiratoria</span>
           </div>
           <div style={{ display: 'flex', gap: '6px' }}>
             {(['barras', 'lineas'] as const).map(v => (
@@ -304,8 +316,8 @@ export const DashboardEpidemiologico: React.FC = () => {
                 <YAxis tick={{ fontSize: 9, fill: colores.textoOscuro }} axisLine={false} tickLine={false} />
                 <Tooltip content={<TooltipHistorico />} />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
-                <Bar dataKey="actual"    name="Período actual"      fill="#EF4444"                  radius={[4,4,0,0]} />
-                <Bar dataKey="historico" name="Promedio histórico"   fill={`${colores.primario}60`}  radius={[4,4,0,0]} />
+                <Bar dataKey="actual"    name="Período actual"    fill="#EF4444"                 radius={[4,4,0,0]} />
+                <Bar dataKey="historico" name="Promedio histórico" fill={`${colores.primario}60`} radius={[4,4,0,0]} />
               </BarChart>
             ) : (
               <LineChart data={historicaSemanal} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
@@ -323,7 +335,7 @@ export const DashboardEpidemiologico: React.FC = () => {
       </div>
 
       {/* Alerta brote */}
-      <div style={{ background: '#EF444408', border: '1px solid #EF444425', borderRadius: '16px', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+      <div style={{ background: '#EF444408', border: '1px solid #EF444425', borderRadius: '16px', padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
         <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#EF444420', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <AlertTriangle size={18} color="#EF4444" />
         </div>
@@ -332,9 +344,9 @@ export const DashboardEpidemiologico: React.FC = () => {
           <div style={{ fontSize: '12px', color: colores.textoMedio, marginTop: '2px' }}>
             Incremento atípico +34% vs histórico en casos respiratorios. Se recomienda incrementar stock de antigripales y antibióticos.
           </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#EF4444', fontSize: '12px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-          Ver detalle <ArrowUpRight size={14} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#EF4444', fontSize: '12px', fontWeight: '700', cursor: 'pointer', marginTop: '8px' }}>
+            Ver detalle <ArrowUpRight size={14} />
+          </div>
         </div>
       </div>
 

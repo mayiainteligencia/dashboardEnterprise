@@ -31,6 +31,14 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
   const [filtroActivo, setFiltroActivo] = useState('Todos');
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -45,7 +53,7 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
       backgroundColor: colores.fondoSecundario,
       borderRadius: '24px',
       border: `1px solid ${colores.borde}`,
-      padding: '20px',
+      padding: isMobile ? '16px' : '20px',
       display: 'flex',
       flexDirection: 'column',
       gap: '14px',
@@ -63,7 +71,7 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
             <MapPin size={18} color="white" />
           </div>
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
+            <h3 style={{ fontSize: isMobile ? '13px' : '15px', fontWeight: 'bold', color: colores.textoClaro, margin: 0 }}>
               Mapa de Calor Epidemiológico
             </h3>
             <p style={{ fontSize: '10px', color: colores.textoMedio, margin: 0 }}>
@@ -115,10 +123,13 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
         ))}
       </div>
 
-      {/* Layout horizontal: Mapa PNG izquierda | Top 5 + stats derecha */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-
-        {/* Columna izquierda: Mapa PNG */}
+      {/* Layout: columnas en desktop, stack vertical en móvil */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        gap: '14px',
+      }}>
+        {/* Mapa PNG */}
         <div style={{
           backgroundColor: colores.fondoTerciario,
           borderRadius: '14px',
@@ -127,7 +138,6 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
           flexDirection: 'column',
           gap: '8px',
         }}>
-          {/* Imagen PNG del mapa de México — sustituye con la ruta real de tu asset */}
           <div style={{ position: 'relative', width: '100%' }}>
             <img
               src="/assets/mapaMex.png"
@@ -135,7 +145,7 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
               onClick={() => onNavigate?.('analiticos')}
               style={{
                 width: '100%',
-                height: '160px',
+                height: isMobile ? '200px' : '160px',
                 objectFit: 'contain',
                 cursor: 'pointer',
                 borderRadius: '8px',
@@ -145,7 +155,6 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
               onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
               onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
             />
-            {/* Badge "Ver detalle" */}
             <div style={{
               position: 'absolute', bottom: '6px', right: '6px',
               backgroundColor: 'rgba(139,92,246,0.85)', borderRadius: '8px',
@@ -157,8 +166,6 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
               Ver detalle →
             </div>
           </div>
-
-          {/* Leyenda */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
             <span style={{ fontSize: '8px', color: colores.textoMedio }}>Bajo</span>
             {['#0EA5E9', '#10B981', '#F59E0B', '#EF4444'].map(c => (
@@ -168,10 +175,8 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
           </div>
         </div>
 
-        {/* Columna derecha: Top 5 + contadores */}
+        {/* Top 5 + contadores */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-
-          {/* Top 5 */}
           <div style={{ backgroundColor: colores.fondoTerciario, borderRadius: '14px', padding: '12px', flex: 1 }}>
             <p style={{ fontSize: '11px', fontWeight: '600', color: colores.textoClaro, margin: '0 0 8px 0' }}>Top 5 Estados</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
@@ -188,7 +193,6 @@ export const MapaCalorModule: React.FC<MapaCalorModuleProps> = ({ onNavigate }) 
             </div>
           </div>
 
-          {/* Contadores */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {[
               { num: '9,600+', label: 'Sucursales', color: '#8B5CF6' },
