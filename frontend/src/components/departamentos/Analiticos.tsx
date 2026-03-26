@@ -155,7 +155,7 @@ export const Analiticos: React.FC = () => {
         <span style={{ color: colores.textoOscuro }}>Analíticos</span>
         <ChevronRight size={12} />
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: moduloActual.color, fontWeight: '700' }}>
-          {React.cloneElement(moduloActual.icono, { size: 12 })}
+          {React.cloneElement(moduloActual.icono as React.ReactElement<{ size?: number }>, { size: 12 })}
           {moduloActual.label}
         </span>
         {(moduloActual.alertas ?? 0) > 0 && (

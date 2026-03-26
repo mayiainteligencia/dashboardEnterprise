@@ -526,9 +526,8 @@ export const PanelKPIs: React.FC = () => {
                   </defs>
                   <XAxis dataKey="label" tick={{ fontSize: 9, fill: colores.textoOscuro }} axisLine={false} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ background: colores.fondoSecundario, border: `1px solid ${colores.borde}`, borderRadius: '8px', fontSize: '11px' }}
-                    formatter={(val: number) => [`${val}${kpiSeleccionado.unidad}`, kpiSeleccionado.titulo]}
-                  />
+                    contentStyle={{ background: colores.fondoSecundario, border: `1px solid ${colores.borde}`, borderRadius: '8px', fontSize: '11px' }}    
+                    formatter={(val: number | undefined) => [`${val ?? 0}${kpiSeleccionado.unidad}`, kpiSeleccionado.titulo]}    />
                   <Area
                     type="monotone"
                     dataKey="v"
