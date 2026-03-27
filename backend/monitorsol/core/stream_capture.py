@@ -16,6 +16,7 @@ async def capturar_chunk(url: str, sesion_id: str, chunk_index: int) -> str | No
     cmd = [
         "ffmpeg",
         "-y",                        # sobreescribir si existe
+        "-tls_verify", "0",          # ← NUEVO: ignora SSL
         "-i", url,                   # URL del stream
         "-t", str(CHUNK_SEGUNDOS),   # duración del chunk
         "-ar", "16000",              # sample rate que Whisper necesita

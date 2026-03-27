@@ -1,10 +1,10 @@
 // src/components/modules/MonitorMedios.tsx
 import { useState, useEffect, useRef } from 'react';
 import { brandingConfig } from '../config/branding';
+import { Search, RotateCcw, Radio } from 'lucide-react';
 
 const { colores } = brandingConfig;
 
-// ─── Tipos ───────────────────────────────────────────────────────────
 interface Sesion {
   sesion_id: string;
   emisora_nombre: string;
@@ -16,15 +16,16 @@ interface Sesion {
 }
 
 interface Testigo {
-  id: number;
-  sesion_id: string;
-  emisora_nombre: string;
-  keyword_detectada: string;
-  transcripcion: string;
+  id?: number;
+  sesion_id?: string;
+  emisora_nombre?: string;
+  emisora?: string;
+  keyword_detectada?: string;
+  keyword?: string;
+  transcripcion?: string;
   timestamp: string;
 }
 
-// ─── Componente principal ─────────────────────────────────────────────
 export const MonitorMedios = () => {
   const [sesiones, setSesiones] = useState<Sesion[]>([]);
   const [testigos, setTestigos] = useState<Testigo[]>([]);
@@ -33,24 +34,19 @@ export const MonitorMedios = () => {
   const [keywordsInput, setKeywordsInput] = useState('');
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
+  const [filtroKeyword, setFiltroKeyword] = useState('');
   const wsRefs = useRef<Record<string, WebSocket>>({});
 
-  // Polling de sesiones cada 5s
   useEffect(() => {
     fetchSesiones();
     fetchTestigos();
-    const interval = setInterval(() => {
-      fetchSesiones();
-    }, 5000);
+    const interval = setInterval(fetchSesiones, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // Conectar WebSocket cuando hay sesiones nuevas
   useEffect(() => {
     sesiones.forEach(s => {
-      if (!wsRefs.current[s.sesion_id]) {
-        conectarWS(s.sesion_id);
-      }
+      if (!wsRefs.current[s.sesion_id]) conectarWS(s.sesion_id);
     });
   }, [sesiones]);
 
@@ -59,7 +55,7 @@ export const MonitorMedios = () => {
       const res = await fetch('/api/monitor/sessions');
       const data = await res.json();
       setSesiones(data.sesiones || []);
-    } catch { /* silencioso */ }
+    } catch {}
   };
 
   const fetchTestigos = async () => {
@@ -67,18 +63,16 @@ export const MonitorMedios = () => {
       const res = await fetch('/api/monitor/testigos');
       const data = await res.json();
       setTestigos(data.testigos || []);
-    } catch { /* silencioso */ }
+    } catch {}
   };
 
   const conectarWS = (sesionId: string) => {
     const ws = new WebSocket(`ws://localhost:8001/ws/${sesionId}`);
     ws.onmessage = (e) => {
       const alerta: Testigo = JSON.parse(e.data);
-      setTestigos(prev => [alerta as any, ...prev]);
+      setTestigos(prev => [alerta, ...prev]);
     };
-    ws.onclose = () => {
-      delete wsRefs.current[sesionId];
-    };
+    ws.onclose = () => { delete wsRefs.current[sesionId]; };
     wsRefs.current[sesionId] = ws;
   };
 
@@ -87,18 +81,13 @@ export const MonitorMedios = () => {
     if (!emisoraUrl.trim()) return setError('Ingresa la URL de la emisora');
     if (!keywordsInput.trim()) return setError('Ingresa al menos una keyword');
     if (sesiones.length >= 3) return setError('Máximo 3 sesiones simultáneas');
-
     setCargando(true);
     try {
       const keywords = keywordsInput.split(',').map(k => k.trim()).filter(Boolean);
       const res = await fetch('/api/monitor/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          emisora_url: emisoraUrl,
-          emisora_nombre: emisoraNombre || 'Sin nombre',
-          keywords
-        })
+        body: JSON.stringify({ emisora_url: emisoraUrl, emisora_nombre: emisoraNombre || 'Sin nombre', keywords })
       });
       const data = await res.json();
       if (!res.ok) return setError(data.error || 'Error al iniciar');
@@ -119,16 +108,23 @@ export const MonitorMedios = () => {
       wsRefs.current[sesionId]?.close();
       delete wsRefs.current[sesionId];
       await fetchSesiones();
-    } catch { /* silencioso */ }
+    } catch {}
+  };
+
+  const reiniciarVista = () => {
+    setTestigos([]);
+    setFiltroKeyword('');
   };
 
   const exportarCSV = () => {
-    if (!testigos.length) return;
+    const datos = testigosFiltrados;
+    if (!datos.length) return;
+    const BOM = '\uFEFF';
     const headers = 'ID,Emisora,Keyword,Transcripción,Timestamp\n';
-    const rows = testigos.map(t =>
-      `${t.id},"${t.emisora_nombre}","${t.keyword_detectada}","${t.transcripcion.replace(/"/g, '""')}","${t.timestamp}"`
+    const rows = datos.map((t, i) =>
+      `${t.id ?? i + 1},"${t.emisora_nombre ?? t.emisora ?? ''}","${t.keyword_detectada ?? t.keyword ?? ''}","${(t.transcripcion ?? '').replace(/"/g, '""')}","${t.timestamp}"`
     ).join('\n');
-    const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([BOM + headers + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -137,7 +133,16 @@ export const MonitorMedios = () => {
     URL.revokeObjectURL(url);
   };
 
-  // ─── Render ───────────────────────────────────────────────────────
+  // Keywords únicas para el selector de filtro
+  const keywordsUnicas = Array.from(new Set(
+    testigos.map(t => t.keyword_detectada ?? t.keyword ?? '').filter(Boolean)
+  ));
+
+  // Testigos filtrados
+  const testigosFiltrados = filtroKeyword
+    ? testigos.filter(t => (t.keyword_detectada ?? t.keyword) === filtroKeyword)
+    : testigos;
+
   return (
     <div style={{ minHeight: '100vh', background: colores.fondoPrincipal, padding: '32px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
@@ -155,50 +160,32 @@ export const MonitorMedios = () => {
         {/* ── Grid principal ── */}
         <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 24, alignItems: 'start' }}>
 
-          {/* ── Panel izquierdo: Configurador ── */}
+          {/* ── Panel izquierdo ── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-            {/* Formulario nueva sesión */}
+            {/* Formulario */}
             <div style={{
-              background: colores.fondoClaro,
-              borderRadius: 16,
-              padding: 24,
-              border: `1px solid ${colores.borde}`,
-              boxShadow: colores.sombra
+              background: colores.fondoClaro, borderRadius: 16,
+              padding: 24, border: `1px solid ${colores.borde}`, boxShadow: colores.sombra
             }}>
               <h2 style={{ fontSize: 16, fontWeight: 600, color: colores.textoClaro, margin: '0 0 20px' }}>
                 Nueva sesión
               </h2>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div>
                   <label style={labelStyle}>URL de la emisora</label>
-                  <input
-                    value={emisoraUrl}
-                    onChange={e => setEmisoraUrl(e.target.value)}
-                    placeholder="https://streaming.ejemplo.com/radio"
-                    style={inputStyle}
-                  />
+                  <input value={emisoraUrl} onChange={e => setEmisoraUrl(e.target.value)}
+                    placeholder="https://streaming.ejemplo.com/radio" style={inputStyle} />
                 </div>
-
                 <div>
                   <label style={labelStyle}>Nombre de la emisora</label>
-                  <input
-                    value={emisoraNombre}
-                    onChange={e => setEmisoraNombre(e.target.value)}
-                    placeholder="Ej: Exa FM 104.9"
-                    style={inputStyle}
-                  />
+                  <input value={emisoraNombre} onChange={e => setEmisoraNombre(e.target.value)}
+                    placeholder="Ej: Exa FM 104.9" style={inputStyle} />
                 </div>
-
                 <div>
                   <label style={labelStyle}>Keywords (separadas por coma)</label>
-                  <input
-                    value={keywordsInput}
-                    onChange={e => setKeywordsInput(e.target.value)}
-                    placeholder="Ej: Coca-Cola, nuevo sabor, promo"
-                    style={inputStyle}
-                  />
+                  <input value={keywordsInput} onChange={e => setKeywordsInput(e.target.value)}
+                    placeholder="Ej: Coca-Cola, Telcel, Oxxo" style={inputStyle} />
                   <p style={{ fontSize: 11, color: colores.textoOscuro, margin: '6px 0 0' }}>
                     El sistema alertará cuando detecte cualquiera de estas palabras
                   </p>
@@ -207,23 +194,18 @@ export const MonitorMedios = () => {
                 {error && (
                   <div style={{
                     background: '#FEF2F2', border: '1px solid #FECACA',
-                    borderRadius: 8, padding: '10px 14px',
-                    fontSize: 13, color: '#DC2626'
+                    borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#DC2626'
                   }}>
                     {error}
                   </div>
                 )}
 
-                <button
-                  onClick={iniciarMonitoreo}
-                  disabled={cargando}
-                  style={{
-                    padding: '12px 0', borderRadius: 10, border: 'none',
-                    background: colores.textoClaro, color: colores.fondoClaro,
-                    fontWeight: 600, fontSize: 14, cursor: cargando ? 'not-allowed' : 'pointer',
-                    opacity: cargando ? 0.6 : 1, transition: 'opacity 0.2s'
-                  }}
-                >
+                <button onClick={iniciarMonitoreo} disabled={cargando} style={{
+                  padding: '12px 0', borderRadius: 10, border: 'none',
+                  background: colores.textoClaro, color: colores.textoEnOscuro,
+                  fontWeight: 600, fontSize: 14, cursor: cargando ? 'not-allowed' : 'pointer',
+                  opacity: cargando ? 0.6 : 1, transition: 'opacity 0.2s'
+                }}>
                   {cargando ? 'Iniciando...' : '▶ Iniciar monitoreo'}
                 </button>
               </div>
@@ -231,10 +213,8 @@ export const MonitorMedios = () => {
 
             {/* Sesiones activas */}
             <div style={{
-              background: colores.fondoClaro,
-              borderRadius: 16, padding: 24,
-              border: `1px solid ${colores.borde}`,
-              boxShadow: colores.sombra
+              background: colores.fondoClaro, borderRadius: 16,
+              padding: 24, border: `1px solid ${colores.borde}`, boxShadow: colores.sombra
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 600, color: colores.textoClaro, margin: 0 }}>
@@ -257,17 +237,15 @@ export const MonitorMedios = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {sesiones.map(s => (
                     <div key={s.sesion_id} style={{
-                      background: colores.fondoSecundario,
-                      borderRadius: 10, padding: '12px 14px',
-                      border: `1px solid ${colores.borde}`
+                      background: colores.fondoSecundario, borderRadius: 10,
+                      padding: '12px 14px', border: `1px solid ${colores.borde}`
                     }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                             <span style={{
                               width: 8, height: 8, borderRadius: '50%',
-                              background: '#10B981', display: 'inline-block',
-                              boxShadow: '0 0 6px #10B981'
+                              background: '#10B981', display: 'inline-block', boxShadow: '0 0 6px #10B981'
                             }} />
                             <span style={{ fontSize: 13, fontWeight: 600, color: colores.textoClaro }}>
                               {s.emisora_nombre}
@@ -276,11 +254,10 @@ export const MonitorMedios = () => {
                           <div style={{ fontSize: 11, color: colores.textoOscuro, marginBottom: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {s.emisora_url}
                           </div>
-                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                             {s.keywords.map(kw => (
                               <span key={kw} style={{
-                                background: colores.fondoTerciario,
-                                color: colores.textoMedio,
+                                background: colores.fondoTerciario, color: colores.textoMedio,
                                 fontSize: 11, padding: '2px 8px', borderRadius: 999
                               }}>
                                 {kw}
@@ -291,15 +268,11 @@ export const MonitorMedios = () => {
                             {s.total_detecciones} detecciones · {s.total_chunks} chunks
                           </div>
                         </div>
-                        <button
-                          onClick={() => detenerSesion(s.sesion_id)}
-                          style={{
-                            marginLeft: 10, padding: '4px 10px',
-                            borderRadius: 6, border: '1px solid #FECACA',
-                            background: '#FEF2F2', color: '#DC2626',
-                            fontSize: 11, fontWeight: 600, cursor: 'pointer'
-                          }}
-                        >
+                        <button onClick={() => detenerSesion(s.sesion_id)} style={{
+                          marginLeft: 10, padding: '4px 10px', borderRadius: 6,
+                          border: '1px solid #FECACA', background: '#FEF2F2',
+                          color: '#DC2626', fontSize: 11, fontWeight: 600, cursor: 'pointer'
+                        }}>
                           Detener
                         </button>
                       </div>
@@ -312,73 +285,104 @@ export const MonitorMedios = () => {
 
           {/* ── Panel derecho: Testigos ── */}
           <div style={{
-            background: colores.fondoClaro,
-            borderRadius: 16, padding: 24,
-            border: `1px solid ${colores.borde}`,
-            boxShadow: colores.sombra,
-            minHeight: 600
+            background: colores.fondoClaro, borderRadius: 16,
+            padding: 24, border: `1px solid ${colores.borde}`,
+            boxShadow: colores.sombra, minHeight: 600
           }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            {/* Header testigos */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
               <div>
                 <h2 style={{ fontSize: 16, fontWeight: 600, color: colores.textoClaro, margin: 0 }}>
                   Testigos detectados
                 </h2>
                 <p style={{ fontSize: 12, color: colores.textoOscuro, margin: '4px 0 0' }}>
-                  Registro en tiempo real de cada mención detectada
+                  {testigosFiltrados.length} registros
+                  {filtroKeyword && ` · filtrando por "${filtroKeyword}"`}
                 </p>
               </div>
-              <button
-                onClick={exportarCSV}
-                disabled={testigos.length === 0}
-                style={{
+
+              {/* Acciones */}
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+
+                {/* Filtro por keyword */}
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <Search size={14} color={colores.textoOscuro} style={{ position: 'absolute', left: 10, pointerEvents: 'none' }} />
+                  <select
+                    value={filtroKeyword}
+                    onChange={e => setFiltroKeyword(e.target.value)}
+                    style={{
+                      paddingLeft: 30, paddingRight: 12, paddingTop: 8, paddingBottom: 8,
+                      borderRadius: 8, border: `1px solid ${colores.borde}`,
+                      background: colores.fondoSecundario, color: colores.textoMedio,
+                      fontSize: 13, cursor: 'pointer', appearance: 'none', outline: 'none'
+                    }}
+                  >
+                    <option value="">Todas las keywords</option>
+                    {keywordsUnicas.map(kw => (
+                      <option key={kw} value={kw}>{kw}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Reiniciar vista */}
+                <button onClick={reiniciarVista} title="Limpiar vista" style={{
+                  padding: '8px 12px', borderRadius: 8,
+                  border: `1px solid ${colores.borde}`,
+                  background: colores.fondoSecundario, color: colores.textoMedio,
+                  fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6
+                }}>
+                  <RotateCcw size={14} />
+                  Reiniciar
+                </button>
+
+                {/* Exportar CSV */}
+                <button onClick={exportarCSV} disabled={testigosFiltrados.length === 0} style={{
                   padding: '8px 16px', borderRadius: 8,
                   border: `1px solid ${colores.borde}`,
-                  background: colores.fondoSecundario,
-                  color: colores.textoMedio,
+                  background: colores.fondoSecundario, color: colores.textoMedio,
                   fontSize: 13, fontWeight: 500,
-                  cursor: testigos.length === 0 ? 'not-allowed' : 'pointer',
-                  opacity: testigos.length === 0 ? 0.5 : 1
-                }}
-              >
-                ↓ Exportar CSV
-              </button>
+                  cursor: testigosFiltrados.length === 0 ? 'not-allowed' : 'pointer',
+                  opacity: testigosFiltrados.length === 0 ? 0.5 : 1
+                }}>
+                  ↓ CSV
+                </button>
+              </div>
             </div>
 
-            {testigos.length === 0 ? (
+            {/* Lista testigos */}
+            {testigosFiltrados.length === 0 ? (
               <div style={{
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center',
                 height: 400, gap: 12
               }}>
-                <div style={{ fontSize: 48 }}>📻</div>
+                <Radio size={48} color={colores.textoOscuro} strokeWidth={1} />
                 <p style={{ fontSize: 15, fontWeight: 500, color: colores.textoMedio, margin: 0 }}>
-                  Esperando detecciones...
+                  {filtroKeyword ? `Sin detecciones para "${filtroKeyword}"` : 'Esperando detecciones...'}
                 </p>
                 <p style={{ fontSize: 13, color: colores.textoOscuro, margin: 0 }}>
-                  Inicia una sesión de monitoreo para ver los testigos aquí
+                  {filtroKeyword ? 'Prueba con otra keyword o quita el filtro' : 'Inicia una sesión de monitoreo para ver los testigos aquí'}
                 </p>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: 700, overflowY: 'auto' }}>
-                {testigos.map((t, i) => (
+                {testigosFiltrados.map((t, i) => (
                   <div key={t.id ?? i} style={{
-                    background: colores.fondoSecundario,
-                    borderRadius: 12, padding: '14px 16px',
-                    border: `1px solid ${colores.borde}`,
+                    background: colores.fondoSecundario, borderRadius: 12,
+                    padding: '14px 16px', border: `1px solid ${colores.borde}`,
                     borderLeft: `4px solid ${colores.textoClaro}`,
                     animation: 'fadeIn 0.3s ease'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{
-                          background: colores.textoClaro, color: colores.fondoClaro,
-                          fontSize: 11, fontWeight: 700,
-                          padding: '3px 10px', borderRadius: 999
+                          background: colores.textoClaro, color: colores.textoEnOscuro,
+                          fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 999
                         }}>
-                          {t.keyword_detectada}
+                          {t.keyword_detectada ?? t.keyword}
                         </span>
                         <span style={{ fontSize: 12, color: colores.textoOscuro, fontWeight: 500 }}>
-                          {t.emisora_nombre}
+                          {t.emisora_nombre ?? t.emisora}
                         </span>
                       </div>
                       <span style={{ fontSize: 11, color: colores.textoOscuro }}>
@@ -387,8 +391,7 @@ export const MonitorMedios = () => {
                     </div>
                     <p style={{
                       fontSize: 13, color: colores.textoMedio,
-                      margin: 0, lineHeight: 1.5,
-                      fontStyle: 'italic'
+                      margin: 0, lineHeight: 1.5, fontStyle: 'italic'
                     }}>
                       "{t.transcripcion}"
                     </p>
@@ -407,16 +410,13 @@ export const MonitorMedios = () => {
   );
 };
 
-// ─── Estilos compartidos ──────────────────────────────────────────────
 const labelStyle: React.CSSProperties = {
   display: 'block', fontSize: 12, fontWeight: 600,
   color: colores.textoMedio, marginBottom: 6
 };
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '10px 12px',
-  borderRadius: 8, border: `1px solid ${colores.borde}`,
-  background: colores.fondoSecundario,
-  color: colores.textoClaro, fontSize: 13,
-  outline: 'none', boxSizing: 'border-box'
+  width: '100%', padding: '10px 12px', borderRadius: 8,
+  border: `1px solid ${colores.borde}`, background: colores.fondoSecundario,
+  color: colores.textoClaro, fontSize: 13, outline: 'none', boxSizing: 'border-box'
 };

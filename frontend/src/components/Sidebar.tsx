@@ -43,7 +43,7 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', nombre: 'Dashboard General', icono: LayoutDashboard },
-  { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp},
+  // { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp},
   { id: 'monitor', nombre: 'Monitor de Medios', icono: Radio },  // ← NUEVO
 ];
 
@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeSection, onSectionChange
             }}
           >
             <img 
-              src="/assets/logosEmpresas/guanajuato.png" 
+              src="/assets/logosEmpresas/susurro.jpg" 
               alt={empresa.nombre}
               style={{
                 width: '100%',

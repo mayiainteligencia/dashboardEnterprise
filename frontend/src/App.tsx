@@ -12,7 +12,7 @@ import { Administracion } from './components/departamentos/Administracion';
 import { Ciberseguridad } from './components/departamentos/Ciberseguridad';
 import { Playground } from './components/departamentos/Playground';
 import { Academia } from './components/departamentos/Academia';
-import { Analiticos } from './components/departamentos/Analiticos';
+
 import { MonitorMedios } from './components/MonitorMedios';
 import { brandingConfig } from './config/branding';
 
@@ -35,7 +35,7 @@ function App() {
       ciberseguridad: 'CiberSeguridad',
       playground:     'Playground',
       academia:       'Academia',
-      analiticos:     'Analíticos',
+
       monitor: 'Monitor de Medios',
     };
     return titulos[activeSection] || 'Dashboard';
@@ -53,7 +53,7 @@ function App() {
       case 'ciberseguridad': return <Ciberseguridad />;
       case 'playground':     return <Playground />;
       case 'academia':       return <Academia />;
-      case 'analiticos':     return <Analiticos />;
+
       case 'monitor': return <MonitorMedios />;
       default:               return <Dashboard onSectionChange={setActiveSection} />;
     }

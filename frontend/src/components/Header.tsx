@@ -242,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
         <img
           src={empresa.logo}
           alt={`${empresa.nombre} logo`}
-          style={{ height: '206px', width: 'auto', objectFit: 'contain', flexShrink: 0 }}
+          style={{ height: '56px', width: 'auto', objectFit: 'contain', flexShrink: 0 }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
 
@@ -361,7 +361,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
             onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
           >
             <img
-              src="/assets/logosEmpresas/guanajuato.png"
+              src="/assets/logosEmpresas/susurro.jpg"
               alt="Perfil"
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               onError={e => {
