@@ -1,61 +1,61 @@
 export const brandingConfig = {
   empresa: {
-    nombre: "Guanajuato",
+    nombre: "Susurro",
     eslogan: "Gobierno de la Gente",
     logo: "/assets/logosEmpresas/guanajuato.png",
   },
   
   colores: {
-    // Colores MABE Oficiales - TEMA CLARO CON COLORES SÓLIDOS
-    primario: "#008CAE",           // Azul turquesa MABE
-    primarioOscuro: "#006B8A",     // Azul turquesa oscuro
-    primarioClaro: "#B3E5F0",      // Azul claro SÓLIDO
-    
-    secundario: "#F5F7FA",         // Gris claro
-    acento: "#F27405",             // Naranja MABE
-    acentoOscuro: "#D66304",       // Naranja oscuro
-    
-    peligro: "#EF4444",            
-    advertencia: "#F59E0B",        
-    exito: "#10B981",              
-    
-    // Fondos - COLORES SÓLIDOS
-    fondoPrincipal: "#FFFFFF",     // Blanco puro
-    fondoSecundario: "#F8FAFB",    // Gris muy claro
-    fondoTerciario: "#E8EDF2",     // Gris claro SÓLIDO
-    fondoClaro: "#FFFFFF",         
-    
-    // Textos - ✅ CORREGIDOS PARA TEMA CLARO CON BUEN CONTRASTE
-    textoClaro: "#1A202C",         // Negro/gris oscuro (texto principal - WCAG AAA)
-    textoMedio: "#4A5568",         // Gris medio (WCAG AAA)
-    textoOscuro: "#718096",        // Gris claro (textos secundarios)
-    textoEnOscuro: "#FFFFFF",      // Blanco (para fondos oscuros)
-    
-    // Bordes - COLORES SÓLIDOS
-    borde: "#CBD5E0",              // Gris claro SÓLIDO
-    bordeHover: "#5CB8D1",         // Azul claro SÓLIDO
-    
-    // Gradientes
-    gradientePrimario: "linear-gradient(135deg, #008CAE 0%, #3BA5C9 100%)",
-    gradienteSecundario: "linear-gradient(135deg, #F27405 0%, #FF8C1A 100%)",
-    gradienteAcento: "linear-gradient(135deg, #B3E5F0 0%, #FFFFFF 100%)",
-    
-    // Glass effects - COLOR SÓLIDO
-    fondoGlass: "#E6F7FB",         // Azul muy claro SÓLIDO
-    
+    // TEMA OSCURO MINIMALISTA — inspirado en dashboard negro/blanco
+    primario: "#FFFFFF",           // Blanco — elemento primario activo
+    primarioOscuro: "#E2E8F0",     // Blanco apagado — hover/estados
+    primarioClaro: "#2D3748",      // Gris oscuro — superficies activas claras
+
+    secundario: "#1A1A1A",         // Negro profundo — fondo de tarjetas secundarias
+    acento: "#FFFFFF",             // Blanco — acento de iconos y badges activos
+    acentoOscuro: "#A0AEC0",       // Gris plateado — acento secundario
+
+    peligro: "#EF4444",
+    advertencia: "#F59E0B",
+    exito: "#10B981",
+
+    // Fondos
+    fondoPrincipal: "#F0F0F0",     // Gris muy claro — fondo base (como la imagen)
+    fondoSecundario: "#E8E8E8",    // Gris claro — áreas de contenido
+    fondoTerciario: "#D4D4D4",     // Gris medio — separadores / hover
+    fondoClaro: "#FFFFFF",         // Blanco puro — tarjetas blancas
+
+    // Textos
+    textoClaro: "#0A0A0A",         // Negro puro — título principal
+    textoMedio: "#2D2D2D",         // Negro suave — cuerpo de texto
+    textoOscuro: "#6B7280",        // Gris — texto secundario/metadatos
+    textoEnOscuro: "#FFFFFF",      // Blanco — texto sobre fondos negros
+
+    // Bordes
+    borde: "#CCCCCC",              // Gris claro — bordes de tarjetas
+    bordeHover: "#888888",         // Gris medio — hover de bordes
+
+    // Gradientes — minimalistas, sin color
+    gradientePrimario: "linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%)",
+    gradienteSecundario: "linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)",
+    gradienteAcento: "linear-gradient(135deg, #E8E8E8 0%, #FFFFFF 100%)",
+
+    // Glass / superficies con profundidad
+    fondoGlass: "#1C1C1C",         // Negro carbón — tarjetas oscuras (como el panel Team)
+
     // Sombras
-    sombra: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    sombraMedia: "0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05)",
-    sombraGrande: "0 10px 15px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.05)",
+    sombra: "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)",
+    sombraMedia: "0 4px 12px rgba(0, 0, 0, 0.10), 0 2px 4px rgba(0, 0, 0, 0.06)",
+    sombraGrande: "0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06)",
   },
-  
+
   metricas: {
     empleados: 568,
     departamentos: 9,
     tareasCompletadas: 13,
     progreso: 70,
   },
-  
+
   ia: {
     nombre: "MAYIA",
     modelo: "Gemini 2.5 Flash",

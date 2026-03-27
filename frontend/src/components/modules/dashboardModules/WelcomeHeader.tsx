@@ -19,7 +19,7 @@ export const WelcomeHeader: React.FC = () => {
           letterSpacing: '-0.5px',
         }}
       >
-        Hola, <span style={{ fontWeight: '600' }}>{empresa.nombre}!</span>
+        Bienvenido a <span style={{ fontWeight: '600' }}>{empresa.nombre}!</span>
       </h1>
       <p
         style={{
@@ -30,7 +30,7 @@ export const WelcomeHeader: React.FC = () => {
           letterSpacing: '-0.5px',
         }}
       >
-        ¿Qué deseas resolver hoy?
+        ¿Qué vamos a monitorear hoy?
       </p>
     </div>
   );
