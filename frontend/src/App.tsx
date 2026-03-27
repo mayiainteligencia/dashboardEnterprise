@@ -13,7 +13,10 @@ import { Ciberseguridad } from './components/departamentos/Ciberseguridad';
 import { Playground } from './components/departamentos/Playground';
 import { Academia } from './components/departamentos/Academia';
 import { Analiticos } from './components/departamentos/Analiticos';
+import { MonitorMedios } from './components/MonitorMedios';
 import { brandingConfig } from './config/branding';
+
+
 import './responsive.css';
 
 function App() {
@@ -33,6 +36,7 @@ function App() {
       playground:     'Playground',
       academia:       'Academia',
       analiticos:     'Analíticos',
+      monitor: 'Monitor de Medios',
     };
     return titulos[activeSection] || 'Dashboard';
   };
@@ -50,6 +54,7 @@ function App() {
       case 'playground':     return <Playground />;
       case 'academia':       return <Academia />;
       case 'analiticos':     return <Analiticos />;
+      case 'monitor': return <MonitorMedios />;
       default:               return <Dashboard onSectionChange={setActiveSection} />;
     }
   };

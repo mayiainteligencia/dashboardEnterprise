@@ -5,6 +5,7 @@ import {
   Shield,
   GraduationCap,
   Code2,
+  Radio, 
 } from 'lucide-react';
 import { brandingConfig } from '../config/branding';
 
@@ -42,7 +43,8 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', nombre: 'Dashboard General', icono: LayoutDashboard },
-  { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp}
+  { id: 'analiticos', nombre: 'Analíticos', icono: TrendingUp},
+  { id: 'monitor', nombre: 'Monitor de Medios', icono: Radio },  // ← NUEVO
 ];
 
 
